@@ -12,6 +12,7 @@ public class Charater : MonoBehaviour
     [SerializeField]
     Animator anim;
 
+    [SerializeField]
     Vector2 targetPos;
 
     void Update()
@@ -25,11 +26,19 @@ public class Charater : MonoBehaviour
 
     void Move()
     {
-        if ((Vector2)transform.position != targetPos)
+        if (targetPos != Vector2.zero)
         {
-            Vector2 dir = 
+            if (Vector2.Distance(transform.position, targetPos) >= .2f)
+            {
+                Vector2 dir = targetPos - (Vector2)transform.position;
 
-            rb2d.velocity = new Vector2();
+                rb2d.velocity = (dir.normalized) * speed;
+            }
+            else
+            {
+                targetPos = Vector2.zero;
+                rb2d.velocity = Vector2.zero;
+            }
         }
     }
 }
