@@ -17,14 +17,14 @@ public class Charater : MonoBehaviour
 
     void Update()
     {
-        if (Mananger.instance.m_GetMouseButtonDownRight)
+        if (InputManager.m_GetMouseButtonDownRight)
         {
-            targetPos = Camera.main.ScreenToWorldPoint(Mananger.instance.m_mousePosition);
+            targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
         }
 
-        if (Mananger.instance.m_GetMouseButtonDownLeft)
+        if (InputManager.m_GetMouseButtonDownLeft)
         {
-            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mananger.instance.m_mousePosition);
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
 
             RaycastHit2D r = Physics2D.Raycast(mousePos, Vector2.zero);
             if (r.collider)
