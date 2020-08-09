@@ -41,8 +41,8 @@ public class Mananger : MonoBehaviour
         }
     }
 
-    public Vector2 m_
-    {
-        get
-    }
+    //    public Vector2 m_
+    //    {
+    //        //get
+    //    }
 }

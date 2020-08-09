@@ -16,16 +16,16 @@ public class Charater : MonoBehaviour
 
     void Update()
     {
-        if (Mananger.instance.m_GetMouseButtonDownRight)
-        {
-            targetPos = 
-        }
+        //if (Mananger.instance.m_GetMouseButtonDownRight)
+        //{
+        //    //targetPos = 
+        //}
         Move();
     }
 
     void Move()
     {
-        transform.position = Vector2.MoveTowards(transform.position,)
+        //transform.position = Vector2.MoveTowards(transform.position,)
     }
     private void Test()
     {
