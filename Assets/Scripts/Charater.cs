@@ -8,6 +8,6 @@ public class Charater : MonoBehaviour
 
     void Update()
     {
-        Mananger.instance.m_Input();
+        
     }
 }

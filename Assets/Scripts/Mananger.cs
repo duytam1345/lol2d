@@ -6,5 +6,5 @@ public class Mananger : MonoBehaviour
 {
     public static Mananger instance;
 
-    public 
+    //public bool()
 }
