@@ -21,6 +21,22 @@ public class Charater : MonoBehaviour
         {
             targetPos = Camera.main.ScreenToWorldPoint(Mananger.instance.m_mousePosition);
         }
+
+        if (Mananger.instance.m_GetMouseButtonDownLeft)
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mananger.instance.m_mousePosition);
+
+            RaycastHit2D r = Physics2D.Raycast(mousePos, Vector2.zero);
+            if (r.collider)
+            {
+                if(r.collider.name== "Ong chu tiem trang bi")
+                {
+
+                }
+            }
+
+        }
+
         Move();
     }
 

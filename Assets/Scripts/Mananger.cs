@@ -44,4 +44,44 @@ public class Mananger : MonoBehaviour
             return Input.mousePosition;
         }
     }
+
+    public bool m_KeyDownQ
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Q);
+        }
+    }
+
+    public bool m_KeyDownW
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Q);
+        }
+    }
+
+    public bool m_KeyDownE
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Q);
+        }
+    }
+
+    public bool m_KeyDownR
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Q);
+        }
+    }
+
+    public bool m_KeyDownP
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Q);
+        }
+    }
 }
