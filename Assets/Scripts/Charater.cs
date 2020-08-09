@@ -27,5 +27,8 @@ public class Charater : MonoBehaviour
     {
         transform.position = Vector2.MoveTowards(transform.position,)
     }
+    private void Test()
+    {
 
+    }
 }
