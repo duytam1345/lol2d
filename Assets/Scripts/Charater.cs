@@ -8,6 +8,10 @@ public class Charater : MonoBehaviour
 
     void Update()
     {
-        
+       
+    }
+    private void Test()
+    {
+
     }
 }
