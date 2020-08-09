@@ -12,23 +12,33 @@ public class Charater : MonoBehaviour
     [SerializeField]
     Animator anim;
 
+    [SerializeField]
     Vector2 targetPos;
 
     void Update()
     {
-        //if (Mananger.instance.m_GetMouseButtonDownRight)
-        //{
-        //    //targetPos = 
-        //}
+        if (Mananger.instance.m_GetMouseButtonDownRight)
+        {
+            targetPos = Camera.main.ScreenToWorldPoint(Mananger.instance.m_mousePosition);
+        }
         Move();
     }
 
     void Move()
     {
-        //transform.position = Vector2.MoveTowards(transform.position,)
-    }
-    private void Test()
-    {
+        if (targetPos != Vector2.zero)
+        {
+            if (Vector2.Distance(transform.position, targetPos) >= .2f)
+            {
+                Vector2 dir = targetPos - (Vector2)transform.position;
 
+                rb2d.velocity = (dir.normalized) * speed;
+            }
+            else
+            {
+                targetPos = Vector2.zero;
+                rb2d.velocity = Vector2.zero;
+            }
+        }
     }
 }
