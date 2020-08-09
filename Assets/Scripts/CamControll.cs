@@ -33,7 +33,7 @@ public class CamControll : MonoBehaviour
     eDirMove dirMove = eDirMove.None;
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Y))
+        if (InputManager.SwiftCamMode)
         {
             SwitchFllow();
         }
