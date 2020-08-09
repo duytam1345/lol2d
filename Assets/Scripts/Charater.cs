@@ -18,17 +18,18 @@ public class Charater : MonoBehaviour
     {
         if (Mananger.instance.m_GetMouseButtonDownRight)
         {
-            targetPos = 
+            targetPos = Camera.main.ScreenToWorldPoint(Mananger.instance.m_mousePosition);
         }
         Move();
     }
 
     void Move()
     {
-        transform.position = Vector2.MoveTowards(transform.position,)
-    }
-    private void Test()
-    {
+        if ((Vector2)transform.position != targetPos)
+        {
+            Vector2 dir = 
 
+            rb2d.velocity = new Vector2();
+        }
     }
 }

@@ -33,16 +33,15 @@ public class Mananger : MonoBehaviour
     {
         get
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                return true;
-            }
-            return false;
+            return Input.GetMouseButtonDown(1);
         }
     }
 
-    public Vector2 m_
+    public Vector2 m_mousePosition
     {
         get
+        {
+            return Input.mousePosition;
+        }
     }
 }
