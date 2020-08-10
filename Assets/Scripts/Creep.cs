@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Creep : MonoBehaviour
 {
@@ -24,6 +25,15 @@ public class Creep : MonoBehaviour
 
     [SerializeField]
     State state;
+
+    [SerializeField]
+    UIFollowTarget ui;
+
+    [SerializeField]
+    Property property;
+
+    [SerializeField]
+    int currentHealth;
 
     [SerializeField]
     float speed;
@@ -216,5 +226,25 @@ public class Creep : MonoBehaviour
             oldPos = transform.position;
             state = State.MoveToTarget;
         }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        currentHealth -= dmg;
+        ui.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
+
+        if (currentHealth <= 0)
+        {
+            Death();
+        }
+    }
+
+    void Death()
+    {
+        // drop money, exp
+
+        //destroy
+        Destroy(ui.gameObject);
+        Destroy(gameObject);
     }
 }

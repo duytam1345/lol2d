@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class Charater : MonoBehaviour
 {
@@ -20,10 +20,16 @@ public class Charater : MonoBehaviour
     [SerializeField]
     Team team;
 
+    [SerializeField]
+    UIFollowTarget uI;
+
     public float speed;
 
     [SerializeField]
     Property property;
+
+    [SerializeField]
+    int currentHealth;
 
     [SerializeField]
     float attackSpeedSecond;
@@ -122,7 +128,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
-                        attacking = false;
+                    attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -140,7 +146,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
-                        attacking = false;
+                    attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -158,7 +164,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
-                        attacking = false;
+                    attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -176,7 +182,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
-                        attacking = false;
+                    attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -221,7 +227,13 @@ public class Charater : MonoBehaviour
     {
         if (attackSpeedSecond <= 0)
         {
-            attackSpeedSecond = property.attackSpeed;
+            if (targetAttack.GetComponent<Creep>())
+            {
+                targetAttack.GetComponent<Creep>().TakeDamage(property.damage);
+                UIManager.instace.MakeTextDamage(targetAttack.transform.position, property.damage.ToString());
+            }
+
+            attackSpeedSecond = 1 / property.attackSpeed;
 
             Vector2 pos = new Vector2(
                 Random.Range(targetAttack.transform.position.x - .5f, targetAttack.transform.position.x + .5f),
@@ -251,5 +263,11 @@ public class Charater : MonoBehaviour
                 rb2d.velocity = Vector2.zero;
             }
         }
+    }
+
+    public void TakeDamage(int dmg)
+    {
+        currentHealth -= dmg;
+        uI.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
     }
 }

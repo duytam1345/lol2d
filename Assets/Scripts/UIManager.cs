@@ -7,10 +7,6 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager instace;
 
-    public GameObject uiFolowPlayer;
-    [SerializeField]
-    float offsetY;
-
     Charater charater;
 
     [SerializeField]
@@ -33,14 +29,6 @@ public class UIManager : MonoBehaviour
         charater = FindObjectOfType<Charater>();
     }
 
-    private void Update()
-    {
-        Vector2 p = Camera.main.WorldToScreenPoint(charater.transform.position);
-        p.y += offsetY;
-
-        uiFolowPlayer.GetComponent<RectTransform>().position = p;
-    }
-
     public GameObject panelShop;
 
     public void ClickShop()
@@ -50,7 +38,28 @@ public class UIManager : MonoBehaviour
 
     public void MakeTextDamage(Vector2 position, string dmg)
     {
-        GameObject t = Instantiate(textDamage, position, Quaternion.identity, GameObject.Find("Canvas").transform);
+        Vector2 rPos = Camera.main.WorldToScreenPoint(position);
+        GameObject t = Instantiate(textDamage, rPos, Quaternion.identity, GameObject.Find("Canvas").transform);
         t.GetComponent<Text>().text = dmg;
+
+        StartCoroutine(FadeOut(t.GetComponent<Text>(), 1));
+    }
+
+    public IEnumerator FadeOut(Text t, float duration)
+    {
+        int index = 0;
+
+        Color c = t.color;
+
+        while (index < 1000 && c.a > 0)
+        {
+            c.a -= 1/(duration/Time.deltaTime);
+            if (t)
+            {
+                t.color = c;
+            }
+            index++;
+            yield return null;
+        }
     }
 }
