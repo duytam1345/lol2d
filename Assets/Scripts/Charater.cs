@@ -17,6 +17,9 @@ public class Charater : MonoBehaviour
     [SerializeField]
     State state;
 
+    [SerializeField]
+    Team team;
+
     public float speed;
 
     [SerializeField]
@@ -111,7 +114,7 @@ public class Charater : MonoBehaviour
             case State.Idle:
                 if (!string.IsNullOrEmpty(nameHit))
                 {
-                    if (nameHit == "Minion")
+                    if (nameHit == "Creep")
                     {
                         targetAttack = r.collider.gameObject;
                         state = State.WalkToAttack;
@@ -119,6 +122,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
+                        attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -128,7 +132,7 @@ public class Charater : MonoBehaviour
                 if (!string.IsNullOrEmpty(nameHit))
                 {
                     targetPos = Vector2.zero;
-                    if (nameHit == "Minion")
+                    if (nameHit == "Creep")
                     {
                         targetAttack = r.collider.gameObject;
                         state = State.WalkToAttack;
@@ -136,6 +140,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
+                        attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -145,7 +150,7 @@ public class Charater : MonoBehaviour
                 if (!string.IsNullOrEmpty(nameHit))
                 {
                     targetPos = Vector2.zero;
-                    if (nameHit == "Minion")
+                    if (nameHit == "Creep")
                     {
                         targetAttack = r.collider.gameObject;
                         state = State.WalkToAttack;
@@ -153,6 +158,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
+                        attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
@@ -162,7 +168,7 @@ public class Charater : MonoBehaviour
                 if (!string.IsNullOrEmpty(nameHit))
                 {
                     targetPos = Vector2.zero;
-                    if (nameHit == "Minion")
+                    if (nameHit == "Creep")
                     {
                         targetAttack = r.collider.gameObject;
                         state = State.WalkToAttack;
@@ -170,6 +176,7 @@ public class Charater : MonoBehaviour
                 }
                 else
                 {
+                        attacking = false;
                     targetAttack = null;
                     targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
                     state = State.Walk;
