@@ -17,8 +17,7 @@ public class Charater : MonoBehaviour
     [SerializeField]
     State state;
 
-    [SerializeField]
-    Team team;
+    public Team team;
 
     [SerializeField]
     UIFollowTarget uI;
@@ -109,89 +108,53 @@ public class Charater : MonoBehaviour
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
         RaycastHit2D r = Physics2D.Raycast(mousePos, Vector2.zero);
-        string nameHit = "";
-        if (r.collider)
-        {
-            nameHit = r.collider.name;
-        }
-
         switch (state)
         {
             case State.Idle:
-                if (!string.IsNullOrEmpty(nameHit))
-                {
-                    if (nameHit == "Creep")
-                    {
-                        targetAttack = r.collider.gameObject;
-                        state = State.WalkToAttack;
-                    }
-                }
-                else
-                {
-                    attacking = false;
-                    targetAttack = null;
-                    targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-                    state = State.Walk;
-                }
+                Check(r);
                 break;
             case State.Walk:
-                if (!string.IsNullOrEmpty(nameHit))
-                {
-                    targetPos = Vector2.zero;
-                    if (nameHit == "Creep")
-                    {
-                        targetAttack = r.collider.gameObject;
-                        state = State.WalkToAttack;
-                    }
-                }
-                else
-                {
-                    attacking = false;
-                    targetAttack = null;
-                    targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-                    state = State.Walk;
-                }
+                Check(r);
                 break;
             case State.WalkToAttack:
-                if (!string.IsNullOrEmpty(nameHit))
-                {
-                    targetPos = Vector2.zero;
-                    if (nameHit == "Creep")
-                    {
-                        targetAttack = r.collider.gameObject;
-                        state = State.WalkToAttack;
-                    }
-                }
-                else
-                {
-                    attacking = false;
-                    targetAttack = null;
-                    targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-                    state = State.Walk;
-                }
+                Check(r);
                 break;
             case State.Attack:
-                if (!string.IsNullOrEmpty(nameHit))
-                {
-                    targetPos = Vector2.zero;
-                    if (nameHit == "Creep")
-                    {
-                        targetAttack = r.collider.gameObject;
-                        state = State.WalkToAttack;
-                    }
-                }
-                else
-                {
-                    attacking = false;
-                    targetAttack = null;
-                    targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-                    state = State.Walk;
-                }
+                Check(r);
                 break;
             case State.Spell:
                 break;
             default:
                 break;
+        }
+    }
+
+    void Check(RaycastHit2D r)
+    {
+        if (r.collider && r.collider.tag == "Minion" && r.collider.GetComponent<Creep>().team != team)
+        {
+            if (r.collider.GetComponent<Creep>().team != team)
+            {
+                targetAttack = r.collider.gameObject;
+                state = State.WalkToAttack;
+            }
+        }
+        else if (r.collider && r.collider.tag == "Turret" && r.collider.GetComponent<Turret>().team != team)
+        {
+            if (r.collider.GetComponent<Turret>().team != team)
+            {
+                targetAttack = r.collider.gameObject;
+                state = State.WalkToAttack;
+            }
+        }
+        else
+        {
+            attacking = false;
+            targetAttack = null;
+            targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
+            state = State.Walk;
+
+            Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
         }
     }
 
@@ -225,23 +188,38 @@ public class Charater : MonoBehaviour
 
     void Attack()
     {
-        if (attackSpeedSecond <= 0)
+        if (targetAttack)
         {
-            if (targetAttack.GetComponent<Creep>())
+            if (attackSpeedSecond <= 0)
             {
-                targetAttack.GetComponent<Creep>().TakeDamage(property.damage);
-                UIManager.instace.MakeTextDamage(targetAttack.transform.position, property.damage.ToString());
+                if (targetAttack.GetComponent<Creep>())
+                {
+                    targetAttack.GetComponent<Creep>().TakeDamage(gameObject, property.damage);
+                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, property.damage.ToString());
+                }
+                else if (targetAttack.GetComponent<Turret>())
+                {
+                    targetAttack.GetComponent<Turret>().TakeDamage(gameObject, property.damage);
+                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, property.damage.ToString());
+                }
+
+                attackSpeedSecond = 1 / property.attackSpeed;
+
+                Vector2 pos = new Vector2(
+                    Random.Range(targetAttack.transform.position.x - .5f, targetAttack.transform.position.x + .5f),
+                    Random.Range(targetAttack.transform.position.y - .5f, targetAttack.transform.position.y + .5f));
+
+                Vector3 rot = new Vector3(0, 0, Random.Range(0, 360));
+
+                GameObject e = Instantiate(prefabHit, pos, Quaternion.Euler(rot.x, rot.y, rot.z));
             }
-
-            attackSpeedSecond = 1 / property.attackSpeed;
-
-            Vector2 pos = new Vector2(
-                Random.Range(targetAttack.transform.position.x - .5f, targetAttack.transform.position.x + .5f),
-                Random.Range(targetAttack.transform.position.y - .5f, targetAttack.transform.position.y + .5f));
-
-            Vector3 rot = new Vector3(0, 0, Random.Range(0, 360));
-
-            GameObject e = Instantiate(prefabHit, pos, Quaternion.Euler(rot.x, rot.y, rot.z));
+        }
+        else
+        {
+            attacking = false;
+            targetPos = Vector2.zero;
+            rb2d.velocity = Vector2.zero;
+            state = State.Idle;
         }
     }
 
@@ -265,7 +243,7 @@ public class Charater : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(GameObject g, int dmg)
     {
         currentHealth -= dmg;
         uI.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;

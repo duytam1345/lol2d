@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ArrowOfMinion : MonoBehaviour
 {
+    public GameObject g;
+
     [SerializeField]
     float speed;
 
@@ -33,7 +35,19 @@ public class ArrowOfMinion : MonoBehaviour
             {
                 if (target.tag == "Player")
                 {
-                    target.GetComponent<Charater>().TakeDamage((int)damage);
+                    target.GetComponent<Charater>().TakeDamage(g,(int)damage);
+
+                    Vector2 rectPos = target.transform.position;
+                    rectPos = new Vector2(
+                        (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
+                        (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
+
+                    UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
+                    Destroy(gameObject);
+                }
+                else if (target.tag == "Minion")
+                {
+                    target.GetComponent<Creep>().TakeDamage(g, (int)damage);
 
                     Vector2 rectPos = target.transform.position;
                     rectPos = new Vector2(
@@ -45,7 +59,15 @@ public class ArrowOfMinion : MonoBehaviour
                 }
                 else if (target.tag == "Turret")
                 {
+                    target.GetComponent<Turret>().TakeDamage(g, (int)damage);
 
+                    Vector2 rectPos = target.transform.position;
+                    rectPos = new Vector2(
+                        (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
+                        (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
+
+                    UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
+                    Destroy(gameObject);
                 }
             }
         }

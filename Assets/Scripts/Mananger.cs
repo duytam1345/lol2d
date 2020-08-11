@@ -11,6 +11,9 @@ public enum Team
 public class Mananger : MonoBehaviour
 {
     [SerializeField]
+    GameObject effectRightClick;
+
+    [SerializeField]
     int numMinion;
     [SerializeField]
     Transform spawEnemyPosition;
@@ -48,5 +51,10 @@ public class Mananger : MonoBehaviour
     private void OnMinionFindEnemy(Minion minion)
     {
         minion.SetEnemy(GameObject.Find("Minion_type1_test").transform);
+    }
+
+    public void MakeAnimClickMove(Vector2 pos)
+    {
+        GameObject g = Instantiate(effectRightClick, pos, Quaternion.identity);
     }
 }
