@@ -18,7 +18,7 @@ public class Creep : MonoBehaviour
         EndGame
     }
 
-    enum Dir
+    public enum Dir
     {
         Left,
         Right
@@ -33,14 +33,12 @@ public class Creep : MonoBehaviour
     [SerializeField]
     State state;
 
-    [SerializeField]
-    Dir direction;
+    public Dir direction;
 
     [SerializeField]
     Vector2 targetPos;
 
-    [SerializeField]
-    UIFollowTarget ui;
+    public UIFollowTarget ui;
 
     [SerializeField]
     Property property;
@@ -48,17 +46,6 @@ public class Creep : MonoBehaviour
     [SerializeField]
     int currentHealth;
 
-    [SerializeField]
-    float speed;
-
-    [SerializeField]
-    float range;
-
-    [SerializeField]
-    float rangeToAttack;
-
-    [SerializeField]
-    float timeAttack;
     [SerializeField]
     float timeAttackSecond;
 
@@ -74,8 +61,7 @@ public class Creep : MonoBehaviour
     [SerializeField]
     float maxDistance;
 
-    [SerializeField]
-    GameObject targetBase;
+    public GameObject targetBase;
 
     [SerializeField]
     GameObject curTarget;
@@ -133,7 +119,7 @@ public class Creep : MonoBehaviour
         if (targetPos != Vector2.zero)
         {
             Vector2 dir = targetPos - (Vector2)transform.position;
-            rb.velocity = dir.normalized * speed;
+            rb.velocity = dir.normalized * property.moveSpeed;
         }
         else
         {
@@ -162,7 +148,7 @@ public class Creep : MonoBehaviour
 
             if (Vector2.Distance(transform.position, oldPos) < maxDistance)
             {
-                if (Vector2.Distance(transform.position, curTarget.transform.position) <= rangeToAttack)
+                if (Vector2.Distance(transform.position, curTarget.transform.position) <= property.rangeToAttack)
                 {
                     targetPos = Vector2.zero;
                     state = State.Attack;
@@ -240,11 +226,11 @@ public class Creep : MonoBehaviour
         RaycastHit2D[] hit = Physics2D.BoxCastAll((Vector2)transform.position + (direction == Dir.Left ? new Vector2(-1, 0) : new Vector2(1, 0)),
             new Vector2(.8f, .8f), 0, direction == Dir.Left ? Vector2.left : Vector2.right, 0);
 
-
         foreach (var item in hit)
         {
             if (item.collider.name != name && item.collider.GetComponent<Creep>())
             {
+                print(item.collider.name);
                 Vector2 newP = Vector2.zero;
 
                 //kiem tra so luong vat can ben tren
@@ -332,12 +318,12 @@ public class Creep : MonoBehaviour
                 direction = Dir.Right;
             }
 
-            if (Vector2.Distance(transform.position, curTarget.transform.position) <= rangeToAttack)
+            if (Vector2.Distance(transform.position, curTarget.transform.position) <= property.rangeToAttack)
             {
                 if (timeAttackSecond <= 0)
                 {
                     anim.SetTrigger("Attack");
-                    timeAttackSecond = timeAttack;
+                    timeAttackSecond = 1 / property.attackSpeed;
 
                     GameObject g = Instantiate(arrow, transform.position, Quaternion.identity);
                     g.GetComponent<ArrowOfMinion>().g = gameObject;
@@ -360,7 +346,7 @@ public class Creep : MonoBehaviour
 
     void FindEnemy()
     {
-        Collider2D[] collider2D = Physics2D.OverlapCircleAll(transform.position, range);
+        Collider2D[] collider2D = Physics2D.OverlapCircleAll(transform.position, property.rangeToAttack);
 
         GameObject gTarget = null;
         float distance = Mathf.Infinity;
@@ -369,7 +355,7 @@ public class Creep : MonoBehaviour
         {
             if (item.tag == "Player")
             {
-                if (team == Team.Red)
+                if (team != item.GetComponent<Charater>().team)
                 {
                     if (Vector2.Distance(transform.position, item.transform.position) < distance)
                     {
@@ -380,8 +366,7 @@ public class Creep : MonoBehaviour
             }
             else if (item.tag == "Minion")
             {
-                if (team == Team.Red && item.GetComponent<Creep>().team == Team.Blue ||
-                    team == Team.Blue && item.GetComponent<Creep>().team == Team.Red)
+                if (team != item.GetComponent<Creep>().team)
                 {
                     if (Vector2.Distance(transform.position, item.transform.position) < distance)
                     {
@@ -392,7 +377,7 @@ public class Creep : MonoBehaviour
             }
             else if (item.tag == "Turret")
             {
-                if (item.GetComponent<Turret>().team!=team)
+                if (item.GetComponent<Turret>().team != team)
                 {
                     if (Vector2.Distance(transform.position, item.transform.position) < distance)
                     {
@@ -413,13 +398,16 @@ public class Creep : MonoBehaviour
 
     public void TakeDamage(GameObject g, int dmg)
     {
-        if (state == State.Move &&  g&& Vector2.Distance(transform.position, g.transform.position) <= rangeToAttack)
+        if (state == State.Move && g && Vector2.Distance(transform.position, g.transform.position) <= property.rangeToAttack)
         {
             curTarget = g;
         }
 
         currentHealth -= dmg;
-        ui.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
+        if (ui)
+        {
+            ui.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
+        }
 
         if (currentHealth <= 0)
         {

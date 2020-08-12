@@ -41,6 +41,7 @@ public class UIManager : MonoBehaviour
         Vector2 rPos = Camera.main.WorldToScreenPoint(position);
         GameObject t = Instantiate(textDamage, rPos, Quaternion.identity, GameObject.Find("Canvas").transform);
         t.GetComponent<Text>().text = dmg;
+        t.GetComponent<TextOnUI>().pos = rPos;
 
         StartCoroutine(FadeOut(t.GetComponent<Text>(), 1));
     }

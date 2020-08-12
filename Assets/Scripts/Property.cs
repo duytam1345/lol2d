@@ -11,4 +11,6 @@ public class Property : MonoBehaviour
     public int damage;
     public int healthPoint;
     public int manaPoint;
+
+    public int moveSpeed;
 }

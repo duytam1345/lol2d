@@ -22,8 +22,6 @@ public class Charater : MonoBehaviour
     [SerializeField]
     UIFollowTarget uI;
 
-    public float speed;
-
     [SerializeField]
     Property property;
 
@@ -85,6 +83,13 @@ public class Charater : MonoBehaviour
         if (InputManager.m_GetMouseButtonDownLeft)
         {
             LeftClick();
+        }
+
+        if (InputManager.m_KeyDownS)
+        {
+            attacking = false;
+            targetAttack = null;
+            state = State.Idle;
         }
     }
 
@@ -168,7 +173,7 @@ public class Charater : MonoBehaviour
             {
                 Vector2 dir = (Vector2)targetAttack.transform.position - (Vector2)transform.position;
 
-                rb2d.velocity = (dir.normalized) * speed;
+                rb2d.velocity = (dir.normalized) * property.moveSpeed;
 
                 state = State.WalkToAttack;
             }
@@ -231,7 +236,7 @@ public class Charater : MonoBehaviour
             {
                 Vector2 dir = targetPos - (Vector2)transform.position;
 
-                rb2d.velocity = (dir.normalized) * speed;
+                rb2d.velocity = (dir.normalized) * property.moveSpeed;
                 state = State.Walk;
             }
             else
@@ -247,5 +252,10 @@ public class Charater : MonoBehaviour
     {
         currentHealth -= dmg;
         uI.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, property.rangeToAttack);
     }
 }

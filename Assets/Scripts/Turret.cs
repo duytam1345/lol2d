@@ -17,8 +17,7 @@ public class Turret : MonoBehaviour
     [SerializeField]
     Property property;
 
-    [SerializeField]
-    UIFollowTarget ui;
+    public UIFollowTarget ui;
 
     [SerializeField]
     int currentHealth;
@@ -33,10 +32,15 @@ public class Turret : MonoBehaviour
     State state;
 
     [SerializeField]
-    float range;
-
-    [SerializeField]
     Animator anim;
+
+    private void Start()
+    {
+        if (team == Team.Red)
+        {
+            transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = true;
+        }
+    }
 
     private void Update()
     {
@@ -62,7 +66,7 @@ public class Turret : MonoBehaviour
             float minDistance = Mathf.Infinity;
             GameObject minG = null;
 
-            Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, range);
+            Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, property.rangeToAttack);
             foreach (var item in collider2Ds)
             {
                 if (item.GetComponent<Creep>() && item.GetComponent<Creep>().team != team)
@@ -93,7 +97,7 @@ public class Turret : MonoBehaviour
 
     void AttackTarget()
     {
-        if (Vector2.Distance(transform.position, targetAttack.transform.position) > range)
+        if (Vector2.Distance(transform.position, targetAttack.transform.position) > property.rangeToAttack)
         {
             targetAttack = null;
         }
@@ -113,7 +117,7 @@ public class Turret : MonoBehaviour
                 {
                     targetAttack.GetComponent<Charater>().TakeDamage(gameObject, property.damage);
                 }
-                attackSpeedSecond = property.attackSpeed;
+                attackSpeedSecond = 1 / property.attackSpeed;
 
                 Vector2 rectPos = targetAttack.transform.position;
                 rectPos = new Vector2(
@@ -124,7 +128,7 @@ public class Turret : MonoBehaviour
         }
         else
         {
-            attackSpeedSecond = property.attackSpeed;
+            attackSpeedSecond = 1 / property.attackSpeed;
             state = State.Idle;
         }
     }
@@ -148,7 +152,10 @@ public class Turret : MonoBehaviour
         state = State.Destroy;
         team = Team.Red;
         anim.SetBool("Death", true);
-        Destroy(ui.gameObject);
+        if (ui)
+        {
+            Destroy(ui.gameObject);
+        }
         Destroy(gameObject, 1.5f);
     }
 }

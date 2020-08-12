@@ -78,4 +78,12 @@ public class InputManager : MonoBehaviour
             return Input.GetKeyDown(KeyCode.Y);
         }
     }
+
+    public static bool m_KeyDownS
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.S);
+        }
+    }
 }
