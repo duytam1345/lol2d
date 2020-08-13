@@ -8,6 +8,9 @@ public class Creep : MonoBehaviour
     enum Type
     {
         melee,
+        Caster,
+        Siege,
+        Super
     }
 
     enum State
@@ -71,6 +74,11 @@ public class Creep : MonoBehaviour
 
     [SerializeField]
     int damage;
+
+    private void Start()
+    {
+        targetPos = (Vector2)targetBase.transform.position;
+    }
 
     void Update()
     {
@@ -157,18 +165,26 @@ public class Creep : MonoBehaviour
                 {
                     Vector2 v = curTarget.transform.position - transform.position;
                     vToSet = v + (Vector2)transform.position;
+                    curTarget = null;
                 }
             }
             else
             {
                 Vector2 v = targetBase.transform.position - transform.position;
                 vToSet = v + (Vector2)transform.position;
+                    curTarget = null;
             }
         }
         else
         {
             Vector2 v = targetBase.transform.position - transform.position;
             vToSet = v + (Vector2)transform.position;
+        }
+
+        if (targetPos != (Vector2)targetBase.transform.position && 
+            Vector2.Distance(transform.position, targetPos) >= .1f && targetPos!=Vector2.zero)
+        {
+            return;
         }
 
         if (FindWay() != Vector2.zero)
@@ -223,14 +239,13 @@ public class Creep : MonoBehaviour
 
         Vector2 result = Vector2.zero;
 
-        RaycastHit2D[] hit = Physics2D.BoxCastAll((Vector2)transform.position + (direction == Dir.Left ? new Vector2(-1, 0) : new Vector2(1, 0)),
-            new Vector2(.8f, .8f), 0, direction == Dir.Left ? Vector2.left : Vector2.right, 0);
+        RaycastHit2D[] hit = Physics2D.BoxCastAll((Vector2)transform.position + (direction == Dir.Left ? new Vector2(-.1f, 0) : new Vector2(.1f, 0)),
+            new Vector2(1f, .1f), 0, direction == Dir.Left ? Vector2.left : Vector2.right, 0);
 
         foreach (var item in hit)
         {
-            if (item.collider.name != name && item.collider.GetComponent<Creep>())
+            if (!GameObject.ReferenceEquals(item.collider.gameObject, gameObject) && item.collider.GetComponent<Creep>())
             {
-                print(item.collider.name);
                 Vector2 newP = Vector2.zero;
 
                 //kiem tra so luong vat can ben tren
@@ -275,26 +290,26 @@ public class Creep : MonoBehaviour
                 {
                     if (countDown >= countUp)
                     {
-                        newP.y = countUp + 1;
+                        newP.y = countUp * 1.2f + 1.2f;
                         result = newP;
                         return result;
                     }
                     else
                     {
-                        newP.y = countDown - 1;
+                        newP.y = -(countDown * 1.2f + 1.2f);
                         result = newP;
                         return result;
                     }
                 }
                 else if (permissionDown && !permissionUp)
                 {
-                    newP.y = countDown - 1;
+                    newP.y = -(countDown * 1.2f + 1.2f);
                     result = newP;
                     return result;
                 }
                 else if (!permissionDown && permissionUp)
                 {
-                    newP.y = countUp + 1;
+                    newP.y = countUp * 1.2f + 1.2f;
                     result = newP;
                     return result;
                 }
@@ -411,6 +426,12 @@ public class Creep : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            if (g.GetComponent<Charater>())
+            {
+                Vector2 p = new Vector2(transform.position.x, transform.position.y + 2);
+
+                UIManager.instace.MakeTextMoney(p, "+ 14");
+            }
             Death();
         }
     }
@@ -423,5 +444,4 @@ public class Creep : MonoBehaviour
         Destroy(ui.gameObject);
         Destroy(gameObject);
     }
-
 }

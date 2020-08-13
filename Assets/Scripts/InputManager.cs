@@ -75,7 +75,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Y);
+            return Input.GetKeyDown(KeyCode.Backspace);
         }
     }
 

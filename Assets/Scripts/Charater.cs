@@ -22,11 +22,9 @@ public class Charater : MonoBehaviour
     [SerializeField]
     UIFollowTarget uI;
 
-    [SerializeField]
-    Property property;
+    public Property property;
 
-    [SerializeField]
-    int currentHealth;
+    public int currentHealth;
 
     [SerializeField]
     float attackSpeedSecond;
@@ -106,6 +104,18 @@ public class Charater : MonoBehaviour
             {
                 UIManager.instace.ClickShop();
             }
+            else if (r.collider.GetComponent<Creep>())
+            {
+                UIManager.instace.SetInfoPanel(r.collider.gameObject);
+            }
+            else if (r.collider.GetComponent<Turret>())
+            {
+                UIManager.instace.SetInfoPanel(r.collider.gameObject);
+            }
+        }
+        else
+        {
+            UIManager.instace.SetInfoPanel(null);
         }
     }
 
@@ -251,7 +261,13 @@ public class Charater : MonoBehaviour
     public void TakeDamage(GameObject g, int dmg)
     {
         currentHealth -= dmg;
+        UpdateUI();
+    }
+
+    void UpdateUI()
+    {
         uI.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
+        UIManager.instace.UpdatePlayer(this);
     }
 
     private void OnDrawGizmos()

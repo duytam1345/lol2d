@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 834103247923898882}
   - component: {fileID: 834103247923898883}
   m_Layer: 5
-  m_Name: UI Creep R
+  m_Name: UI Creep B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -165,7 +165,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 25}
+  m_SizeDelta: {x: 120, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &834103248415727095
 CanvasRenderer:
@@ -238,7 +238,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 25}
+  m_SizeDelta: {x: 120, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &834103248544734544
 CanvasRenderer:
@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0.07738876, a: 1}
+  m_Color: {r: 0, g: 0.2588687, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

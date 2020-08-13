@@ -134,17 +134,17 @@ public class Mananger : MonoBehaviour
             cB.GetComponent<Creep>().direction = Creep.Dir.Right;
             uB.GetComponent<UIFollowTarget>().gTarget = cB;
 
-            ////Creep Red
-            ////Creep
-            //GameObject cR = Instantiate(preafabCreep, posSpawnCreepRed.transform.position, Quaternion.identity);
-            ////UI
-            //GameObject uR = Instantiate(uiCreepRed, GameObject.Find("UI Creep").transform);
+            //Creep Red
+            //Creep
+            GameObject cR = Instantiate(preafabCreep, posSpawnCreepRed.transform.position, Quaternion.identity);
+            //UI
+            GameObject uR = Instantiate(uiCreepRed, GameObject.Find("UI Creep").transform);
 
-            //cR.GetComponent<Creep>().ui = uR.GetComponent<UIFollowTarget>();
-            //cR.GetComponent<Creep>().targetBase = posSpawnCreepBlue;
-            //cR.GetComponent<Creep>().team = Team.Red;
-            //cR.GetComponent<Creep>().direction = Creep.Dir.Left;
-            //uR.GetComponent<UIFollowTarget>().gTarget = cR;
+            cR.GetComponent<Creep>().ui = uR.GetComponent<UIFollowTarget>();
+            cR.GetComponent<Creep>().targetBase = posSpawnCreepBlue;
+            cR.GetComponent<Creep>().team = Team.Red;
+            cR.GetComponent<Creep>().direction = Creep.Dir.Left;
+            uR.GetComponent<UIFollowTarget>().gTarget = cR;
 
             yield return new WaitForSeconds(2);
         }

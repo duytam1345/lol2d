@@ -97,7 +97,7 @@ public class Turret : MonoBehaviour
 
     void AttackTarget()
     {
-        if (Vector2.Distance(transform.position, targetAttack.transform.position) > property.rangeToAttack)
+        if (targetAttack && Vector2.Distance(transform.position, targetAttack.transform.position) > property.rangeToAttack)
         {
             targetAttack = null;
         }
@@ -157,5 +157,10 @@ public class Turret : MonoBehaviour
             Destroy(ui.gameObject);
         }
         Destroy(gameObject, 1.5f);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, property.rangeToAttack);
     }
 }

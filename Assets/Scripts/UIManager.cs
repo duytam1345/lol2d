@@ -12,6 +12,32 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     GameObject textDamage;
 
+    [SerializeField]
+    GameObject textMoney;
+
+    [SerializeField]
+    Image healthBar;
+
+    [SerializeField]
+    Text textHealth;
+
+    [Header("Selected Object")]
+    [SerializeField]
+    GameObject gSelected;
+
+    [SerializeField]
+    Image imageSelected;
+
+    [Header("Icon")]
+    [SerializeField]
+    Sprite spriteMinionCasterBlue;
+    [SerializeField]
+    Sprite spriteMinionCasterRed;
+    [SerializeField]
+    Sprite spriteTurretBlue;
+    [SerializeField]
+    Sprite spriteTurretRed;
+
     private void Awake()
     {
         if (!instace)
@@ -27,6 +53,7 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         charater = FindObjectOfType<Charater>();
+        UpdatePlayer(charater);
     }
 
     public GameObject panelShop;
@@ -36,14 +63,30 @@ public class UIManager : MonoBehaviour
         panelShop.SetActive(!panelShop.activeInHierarchy);
     }
 
-    public void MakeTextDamage(Vector2 position, string dmg)
+    public void MakeTextDamage(Vector2 position, string str)
     {
         Vector2 rPos = Camera.main.WorldToScreenPoint(position);
         GameObject t = Instantiate(textDamage, rPos, Quaternion.identity, GameObject.Find("Canvas").transform);
-        t.GetComponent<Text>().text = dmg;
+        t.GetComponent<Text>().text = str;
         t.GetComponent<TextOnUI>().pos = rPos;
 
         StartCoroutine(FadeOut(t.GetComponent<Text>(), 1));
+    }
+
+    public void MakeTextMoney(Vector2 position, string str)
+    {
+        Vector2 rPos = Camera.main.WorldToScreenPoint(position);
+        GameObject t = Instantiate(textMoney, rPos, Quaternion.identity, GameObject.Find("Canvas").transform);
+        t.GetComponent<Text>().text = str;
+        t.GetComponent<TextOnUI>().pos = rPos;
+
+        StartCoroutine(FadeOut(t.GetComponent<Text>(), 3));
+    }
+
+    public void UpdatePlayer(Charater charater)
+    {
+        healthBar.fillAmount = (float)charater.currentHealth / (float)charater.property.healthPoint;
+        textHealth.text = charater.currentHealth + "/" + charater.property.healthPoint;
     }
 
     public IEnumerator FadeOut(Text t, float duration)
@@ -54,13 +97,35 @@ public class UIManager : MonoBehaviour
 
         while (index < 1000 && c.a > 0)
         {
-            c.a -= 1/(duration/Time.deltaTime);
+            c.a -= 1 / (duration / Time.deltaTime);
             if (t)
             {
                 t.color = c;
             }
             index++;
             yield return null;
+        }
+    }
+
+    public void SetInfoPanel(GameObject g)
+    {
+        if (g != null)
+        {
+            gSelected.SetActive(true);
+            if (g.GetComponent<Creep>())
+            {
+                imageSelected.sprite = (g.GetComponent<Creep>().team == Team.Blue ? 
+                    spriteMinionCasterBlue : spriteMinionCasterRed);
+            }
+            else if (g.GetComponent<Creep>())
+            {
+                imageSelected.sprite = (g.GetComponent<Turret>().team == Team.Blue ?
+                    spriteTurretBlue : spriteTurretRed);
+            }
+        }
+        else
+        {
+            gSelected.SetActive(false);
         }
     }
 }
