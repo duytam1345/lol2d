@@ -50,6 +50,13 @@ public class Mananger : MonoBehaviour
     [SerializeField]
     GameObject uiTurretBlue;
 
+
+    [Header("Cursor")]
+    [SerializeField]
+    Texture2D m1;
+    [SerializeField]
+    Texture2D m2;
+
     private void Awake()
     {
         if (!instance)
@@ -63,6 +70,8 @@ public class Mananger : MonoBehaviour
     }
     private void Start()
     {
+        Cursor.SetCursor(m1, Vector2.zero,CursorMode.ForceSoftware);
+
         Minion.OnFindEnemy += OnMinionFindEnemy;
         SpawMinion();
         SpawnTurret();
@@ -172,5 +181,17 @@ public class Mananger : MonoBehaviour
     public void MakeAnimClickMove(Vector2 pos)
     {
         GameObject g = Instantiate(effectRightClick, pos, Quaternion.identity);
+    }
+
+    public void SetCursor(int i)
+    {
+        if (i == 0)
+        {
+            Cursor.SetCursor(m1, Vector2.zero, CursorMode.ForceSoftware);
+        }
+        else if (i == 1)
+        {
+            Cursor.SetCursor(m2, Vector2.zero, CursorMode.ForceSoftware);
+        }
     }
 }

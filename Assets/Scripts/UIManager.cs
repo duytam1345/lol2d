@@ -16,6 +16,9 @@ public class UIManager : MonoBehaviour
     GameObject textMoney;
 
     [SerializeField]
+    Image healthBarOnPlayer;
+
+    [SerializeField]
     Image healthBar;
 
     [SerializeField]
@@ -37,6 +40,18 @@ public class UIManager : MonoBehaviour
     Sprite spriteTurretBlue;
     [SerializeField]
     Sprite spriteTurretRed;
+
+    [Header("Skill")]
+    [SerializeField]
+    GameObject gInfoSkill;
+    [SerializeField]
+    Text tNameSkill;
+    [SerializeField]
+    Text tCostSkill;
+    [SerializeField]
+    Text tInfoSkill;
+    [SerializeField]
+    Text tCooldown;
 
     private void Awake()
     {
@@ -85,6 +100,7 @@ public class UIManager : MonoBehaviour
 
     public void UpdatePlayer(Charater charater)
     {
+        healthBarOnPlayer.fillAmount = (float)charater.currentHealth / (float)charater.property.healthPoint;
         healthBar.fillAmount = (float)charater.currentHealth / (float)charater.property.healthPoint;
         textHealth.text = charater.currentHealth + "/" + charater.property.healthPoint;
     }
@@ -114,7 +130,7 @@ public class UIManager : MonoBehaviour
             gSelected.SetActive(true);
             if (g.GetComponent<Creep>())
             {
-                imageSelected.sprite = (g.GetComponent<Creep>().team == Team.Blue ? 
+                imageSelected.sprite = (g.GetComponent<Creep>().team == Team.Blue ?
                     spriteMinionCasterBlue : spriteMinionCasterRed);
             }
             else if (g.GetComponent<Creep>())
@@ -127,5 +143,35 @@ public class UIManager : MonoBehaviour
         {
             gSelected.SetActive(false);
         }
+    }
+
+    public void MouseEnterInfo(GameObject g)
+    {
+        gInfoSkill.SetActive(true);
+
+        Skill skill = g.GetComponent<Skill>();
+        tNameSkill.text = (skill.typeSkill == Skill.TypeSkill.passive ? "(p) " : "") + skill.nameSkill;
+        tCostSkill.text = skill.costSkill + " ";
+        switch (skill.typeCost)
+        {
+            case Skill.TypeCost.Mana:
+                tCostSkill.text += "Năng lượng";
+                break;
+            case Skill.TypeCost.Health:
+                tCostSkill.text += "Máu";
+                break;
+            case Skill.TypeCost.None:
+                tCostSkill.text += "Không tiêu hao";
+                break;
+            default:
+                break;
+        }
+        tCooldown.text = (skill.timeCooldown == 0 ? "" : skill.timeCooldown + " giây");
+        tInfoSkill.text = skill.info;
+    }
+
+    public void MouseExitInfo()
+    {
+        gInfoSkill.SetActive(false);
     }
 }

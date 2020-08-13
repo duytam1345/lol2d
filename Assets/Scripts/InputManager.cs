@@ -43,7 +43,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Q);
+            return Input.GetKeyDown(KeyCode.W);
         }
     }
 
@@ -51,7 +51,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Q);
+            return Input.GetKeyDown(KeyCode.E);
         }
     }
 
@@ -59,7 +59,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Q);
+            return Input.GetKeyDown(KeyCode.R);
         }
     }
 
@@ -67,7 +67,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Q);
+            return Input.GetKeyDown(KeyCode.P);
         }
     }
 
@@ -75,7 +75,7 @@ public class InputManager : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.Backspace);
+            return Input.GetKeyDown(KeyCode.Space);
         }
     }
 

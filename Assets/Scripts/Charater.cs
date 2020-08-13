@@ -14,6 +14,8 @@ public class Charater : MonoBehaviour
         Spell
     }
 
+    public Champion champion;
+
     [SerializeField]
     State state;
 
@@ -22,7 +24,7 @@ public class Charater : MonoBehaviour
     [SerializeField]
     UIFollowTarget uI;
 
-    public Property property;
+    public PropertyChampion property;
 
     public int currentHealth;
 
@@ -47,8 +49,41 @@ public class Charater : MonoBehaviour
     [SerializeField]
     bool attacking;
 
+    [Header("Skill")]
+    [SerializeField]
+    Skill skillpassive;
+    [SerializeField]
+    Skill skillq;
+    [SerializeField]
+    Skill skillw;
+    [SerializeField]
+    Skill skille;
+    [SerializeField]
+    Skill skillr;
+
     void Update()
     {
+        if (skillpassive)
+        {
+            skillpassive.Active(gameObject);
+        }
+        if (skillq && InputManager.m_KeyDownQ)
+        {
+            skillq.Active(gameObject);
+        }
+        if (skillw && InputManager.m_KeyDownW)
+        {
+            skillw.Active(gameObject);
+        }
+        if (skille && InputManager.m_KeyDownE)
+        {
+            skille.Active(gameObject);
+        }
+        if (skillr && InputManager.m_KeyDownR)
+        {
+            skillr.Active(gameObject);
+        }
+
         switch (state)
         {
             case State.Idle:
@@ -73,6 +108,8 @@ public class Charater : MonoBehaviour
             attackSpeedSecond -= Time.deltaTime;
         }
 
+        SetCursor();
+
         if (InputManager.m_GetMouseButtonDownRight)
         {
             RightClick();
@@ -88,6 +125,30 @@ public class Charater : MonoBehaviour
             attacking = false;
             targetAttack = null;
             state = State.Idle;
+        }
+    }
+
+    void SetCursor()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), Vector2.zero);
+        if (hit.collider)
+        {
+            if(hit.collider.GetComponent<Creep>() && hit.collider.GetComponent<Creep>().team != team)
+            {
+                Mananger.instance.SetCursor(1);
+            }
+            else if (hit.collider.GetComponent<Turret>() && hit.collider.GetComponent<Turret>().team != team)
+            {
+                Mananger.instance.SetCursor(1);
+            }
+            else
+            {
+                Mananger.instance.SetCursor(0);
+            }
+        }
+        else
+        {
+            Mananger.instance.SetCursor(0);
         }
     }
 
@@ -270,8 +331,9 @@ public class Charater : MonoBehaviour
         UIManager.instace.UpdatePlayer(this);
     }
 
-    private void OnDrawGizmos()
+    public void TakeHealth(int amount)
     {
-        Gizmos.DrawWireSphere(transform.position, property.rangeToAttack);
+        currentHealth = (int)Mathf.Clamp(currentHealth + amount, 0, property.healthPoint);
+        UIManager.instace.UpdatePlayer(this);
     }
 }
