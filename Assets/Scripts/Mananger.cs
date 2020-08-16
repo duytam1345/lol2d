@@ -11,6 +11,7 @@ public class Mananger : MonoBehaviour
 {
     [SerializeField]
     GameObject effectRightClick;
+    //[ConditionalField("WanderAround")] public float WanderDistance = 5;
 
     [SerializeField]
     int numMinion;

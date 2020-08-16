@@ -41,7 +41,7 @@ public class BoxDamageToEnemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (damageCreep && collision.GetComponent<Creep>() && collision.GetComponent<Creep>().team != FindObjectOfType<Charater>().team)
+        if (damageCreep && collision.GetComponent<Creep>() && collision.GetComponent<Creep>().team != FindObjectOfType<Charater>().champion.team)
         {
             collision.GetComponent<Creep>().TakeDamage(FindObjectOfType<Charater>().gameObject, damage);
 

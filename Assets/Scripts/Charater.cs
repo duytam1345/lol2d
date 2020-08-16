@@ -19,12 +19,8 @@ public class Charater : MonoBehaviour
     [SerializeField]
     State state;
 
-    public Team team;
-
     [SerializeField]
     UIFollowTarget uI;
-
-    public PropertyChampion property;
 
     public int currentHealth;
 
@@ -49,39 +45,36 @@ public class Charater : MonoBehaviour
     [SerializeField]
     bool attacking;
 
-    [Header("Skill")]
-    [SerializeField]
-    Skill skillpassive;
-    [SerializeField]
-    Skill skillq;
-    [SerializeField]
-    Skill skillw;
-    [SerializeField]
-    Skill skille;
-    [SerializeField]
-    Skill skillr;
+    //private void Awake()
+    //{
+    //champion =  GameObject.Find("aasd").GetComponent<MundoChampion>();
+    //}
 
     void Update()
     {
-        if (skillpassive)
+        UIManager.instace.UpdateImage(champion);
+
+        champion.SkillPassive();
+        if (InputManager.m_KeyDownQ)
         {
-            skillpassive.Active(gameObject);
+            champion.SkillQ();
         }
-        if (skillq && InputManager.m_KeyDownQ)
+        if (InputManager.m_KeyDownW)
         {
-            skillq.Active(gameObject);
+            champion.SkillW();
         }
-        if (skillw && InputManager.m_KeyDownW)
+        if (InputManager.m_KeyDownE)
         {
-            skillw.Active(gameObject);
+            champion.SkillE();
         }
-        if (skille && InputManager.m_KeyDownE)
+        if (InputManager.m_KeyDownR)
         {
-            skille.Active(gameObject);
+            champion.SkillR();
         }
-        if (skillr && InputManager.m_KeyDownR)
+
+        if (InputManager.m_KeyDownP)
         {
-            skillr.Active(gameObject);
+            UIManager.instace.ClickShop();
         }
 
         switch (state)
@@ -123,6 +116,7 @@ public class Charater : MonoBehaviour
         if (InputManager.m_KeyDownS)
         {
             attacking = false;
+            rb2d.velocity = Vector2.zero;
             targetAttack = null;
             state = State.Idle;
         }
@@ -133,11 +127,11 @@ public class Charater : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), Vector2.zero);
         if (hit.collider)
         {
-            if(hit.collider.GetComponent<Creep>() && hit.collider.GetComponent<Creep>().team != team)
+            if (hit.collider.GetComponent<Creep>() && hit.collider.GetComponent<Creep>().team != champion.team)
             {
                 Mananger.instance.SetCursor(1);
             }
-            else if (hit.collider.GetComponent<Turret>() && hit.collider.GetComponent<Turret>().team != team)
+            else if (hit.collider.GetComponent<Turret>() && hit.collider.GetComponent<Turret>().team != champion.team)
             {
                 Mananger.instance.SetCursor(1);
             }
@@ -207,17 +201,18 @@ public class Charater : MonoBehaviour
 
     void Check(RaycastHit2D r)
     {
-        if (r.collider && r.collider.tag == "Minion" && r.collider.GetComponent<Creep>().team != team)
+        if (r.collider && r.collider.tag == "Minion")
         {
-            if (r.collider.GetComponent<Creep>().team != team)
+            print("ok");
+            if (r.collider.GetComponent<Creep>().team != champion.team)
             {
                 targetAttack = r.collider.gameObject;
                 state = State.WalkToAttack;
             }
         }
-        else if (r.collider && r.collider.tag == "Turret" && r.collider.GetComponent<Turret>().team != team)
+        else if (r.collider && r.collider.tag == "Turret" && r.collider.GetComponent<Turret>().team != champion.team)
         {
-            if (r.collider.GetComponent<Turret>().team != team)
+            if (r.collider.GetComponent<Turret>().team != champion.team)
             {
                 targetAttack = r.collider.gameObject;
                 state = State.WalkToAttack;
@@ -240,11 +235,11 @@ public class Charater : MonoBehaviour
         {
             targetPos = Vector2.zero;
             attacking = true;
-            if (Vector2.Distance(transform.position, targetAttack.transform.position) > property.rangeToAttack)
+            if (Vector2.Distance(transform.position, targetAttack.transform.position) > champion.propertyChampion.attackRange)
             {
                 Vector2 dir = (Vector2)targetAttack.transform.position - (Vector2)transform.position;
 
-                rb2d.velocity = (dir.normalized) * property.moveSpeed;
+                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed;
 
                 state = State.WalkToAttack;
             }
@@ -270,16 +265,16 @@ public class Charater : MonoBehaviour
             {
                 if (targetAttack.GetComponent<Creep>())
                 {
-                    targetAttack.GetComponent<Creep>().TakeDamage(gameObject, property.damage);
-                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, property.damage.ToString());
+                    targetAttack.GetComponent<Creep>().TakeDamage(gameObject, champion.propertyChampion.physicsDamage_Real);
+                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, champion.propertyChampion.physicsDamage_Real.ToString());
                 }
                 else if (targetAttack.GetComponent<Turret>())
                 {
-                    targetAttack.GetComponent<Turret>().TakeDamage(gameObject, property.damage);
-                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, property.damage.ToString());
+                    targetAttack.GetComponent<Turret>().TakeDamage(gameObject, champion.propertyChampion.physicsDamage_Real);
+                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, champion.propertyChampion.physicsDamage_Real.ToString());
                 }
 
-                attackSpeedSecond = 1 / property.attackSpeed;
+                attackSpeedSecond = 1 / champion.propertyChampion.attackSpeed;
 
                 Vector2 pos = new Vector2(
                     Random.Range(targetAttack.transform.position.x - .5f, targetAttack.transform.position.x + .5f),
@@ -307,7 +302,7 @@ public class Charater : MonoBehaviour
             {
                 Vector2 dir = targetPos - (Vector2)transform.position;
 
-                rb2d.velocity = (dir.normalized) * property.moveSpeed;
+                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed;
                 state = State.Walk;
             }
             else
@@ -319,21 +314,22 @@ public class Charater : MonoBehaviour
         }
     }
 
-    public void TakeDamage(GameObject g, int dmg)
+    public void TakeDamage(GameObject g, int dmg, Vector2 target)
     {
-        currentHealth -= dmg;
-        UpdateUI();
-    }
+        float damage = CongThuc.LayDamage(dmg, champion.propertyChampion.arrmor_Real);
 
-    void UpdateUI()
-    {
-        uI.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
-        UIManager.instace.UpdatePlayer(this);
+       champion.propertyChampion.healthPointSecond -= (int)damage;
+
+        Vector2 rectPos = target;
+        rectPos = new Vector2(
+            (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
+            (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
+
+        UIManager.instace.MakeTextDamage(rectPos, ((int)damage).ToString());
     }
 
     public void TakeHealth(int amount)
     {
-        currentHealth = (int)Mathf.Clamp(currentHealth + amount, 0, property.healthPoint);
-        UIManager.instace.UpdatePlayer(this);
+        currentHealth = (int)Mathf.Clamp(currentHealth + amount, 0, champion.propertyChampion.healthPoint);
     }
 }

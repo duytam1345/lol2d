@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Creep : MonoBehaviour
 {
-    enum Type
+    public enum Type
     {
         melee,
         Caster,
@@ -43,8 +43,7 @@ public class Creep : MonoBehaviour
 
     public UIFollowTarget ui;
 
-    [SerializeField]
-    Property property;
+    public Property property;
 
     [SerializeField]
     int currentHealth;
@@ -172,7 +171,7 @@ public class Creep : MonoBehaviour
             {
                 Vector2 v = targetBase.transform.position - transform.position;
                 vToSet = v + (Vector2)transform.position;
-                    curTarget = null;
+                curTarget = null;
             }
         }
         else
@@ -181,8 +180,8 @@ public class Creep : MonoBehaviour
             vToSet = v + (Vector2)transform.position;
         }
 
-        if (targetPos != (Vector2)targetBase.transform.position && 
-            Vector2.Distance(transform.position, targetPos) >= .1f && targetPos!=Vector2.zero)
+        if (targetPos != (Vector2)targetBase.transform.position &&
+            Vector2.Distance(transform.position, targetPos) >= .1f && targetPos != Vector2.zero)
         {
             return;
         }
@@ -370,7 +369,7 @@ public class Creep : MonoBehaviour
         {
             if (item.tag == "Player")
             {
-                if (team != item.GetComponent<Charater>().team)
+                if (team != item.GetComponent<Charater>().champion.team)
                 {
                     if (Vector2.Distance(transform.position, item.transform.position) < distance)
                     {
@@ -429,8 +428,10 @@ public class Creep : MonoBehaviour
             if (g.GetComponent<Charater>())
             {
                 Vector2 p = new Vector2(transform.position.x, transform.position.y + 2);
+                int money = CongThuc.MoneyOfCreep(type);
 
-                UIManager.instace.MakeTextMoney(p, "+ 14");
+                UIManager.instace.MakeTextMoney(p, money.ToString());
+                g.GetComponentInChildren<Champion>().propertyChampion.money += money;
             }
             Death();
         }
@@ -438,9 +439,15 @@ public class Creep : MonoBehaviour
 
     void Death()
     {
-        // drop money, exp
+        Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, 7);
+        foreach (var item in collider2Ds)
+        {
+            if (item.GetComponent<Charater>())
+            {
+                item.GetComponentInChildren<Champion>().TakeExp(CongThuc.ExpOfCreep(type));
+            }
+        }
 
-        //destroy
         Destroy(ui.gameObject);
         Destroy(gameObject);
     }

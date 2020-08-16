@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PropertyChampion : Property
+[System.Serializable]
+public class SlotInventory : MonoBehaviour
 {
-    
+    public Item item;
 }

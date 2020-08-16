@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 1
-  type: 0
+  type: 1
   state: 1
   direction: 0
   targetPos: {x: 0, y: 0}

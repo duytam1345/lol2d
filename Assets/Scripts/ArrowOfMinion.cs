@@ -35,14 +35,8 @@ public class ArrowOfMinion : MonoBehaviour
             {
                 if (target.tag == "Player")
                 {
-                    target.GetComponent<Charater>().TakeDamage(g,(int)damage);
+                    target.GetComponent<Charater>().TakeDamage(g,(int)damage, target.transform.position);
 
-                    Vector2 rectPos = target.transform.position;
-                    rectPos = new Vector2(
-                        (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
-                        (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
-
-                    UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
                     Destroy(gameObject);
                 }
                 else if (target.tag == "Minion")

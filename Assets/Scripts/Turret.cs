@@ -77,7 +77,7 @@ public class Turret : MonoBehaviour
                         minDistance = Vector2.Distance(transform.position, item.transform.position);
                     }
                 }
-                else if (item.GetComponent<Charater>() && item.GetComponent<Charater>().team != team)
+                else if (item.GetComponent<Charater>() && item.GetComponent<Charater>().champion.team != team)
                 {
                     if (Vector2.Distance(transform.position, item.transform.position) < minDistance)
                     {
@@ -115,7 +115,7 @@ public class Turret : MonoBehaviour
                 }
                 else if (targetAttack.GetComponent<Charater>())
                 {
-                    targetAttack.GetComponent<Charater>().TakeDamage(gameObject, property.damage);
+                    targetAttack.GetComponent<Charater>().TakeDamage(gameObject, property.damage, targetAttack.transform.position);
                 }
                 attackSpeedSecond = 1 / property.attackSpeed;
 

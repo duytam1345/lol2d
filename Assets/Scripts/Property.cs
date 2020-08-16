@@ -10,7 +10,9 @@ public class Property : MonoBehaviour
 
     public int damage;
     public int healthPoint;
-    public int manaPoint;
+
+    public int arrmor;
+    public int magicResistance;
 
     public int moveSpeed;
 }
