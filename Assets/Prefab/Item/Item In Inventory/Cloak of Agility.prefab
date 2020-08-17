@@ -46,7 +46,9 @@ MonoBehaviour:
   imgTarget: {fileID: 0}
   childItem: []
   parentItem: []
+  where: 1
   type: 0
+  typeRequires: 0
   nameItem: "\xC1o cho\xE0ng t\xEDm"
   infoItem: "+20% t\u1EC9 l\u1EC7 ch\xED m\u1EA1ng"
   costItem: 800

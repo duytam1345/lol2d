@@ -46,7 +46,9 @@ MonoBehaviour:
   imgTarget: {fileID: 0}
   childItem: []
   parentItem: []
+  where: 1
   type: 0
+  typeRequires: 0
   nameItem: Rejuvenation Bead
   infoItem: "+50% h\u1ED3i m\xE1u g\u1ED1c"
   costItem: 150

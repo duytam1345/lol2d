@@ -46,7 +46,9 @@ MonoBehaviour:
   imgTarget: {fileID: 0}
   childItem: []
   parentItem: []
+  where: 1
   type: 0
+  typeRequires: 0
   nameItem: Blasting Wand
   infoItem: "+40 S\u1EE9c m\u1EA1nh ph\xE9p thu\u1EADt"
   costItem: 850

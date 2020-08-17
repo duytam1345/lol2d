@@ -5,19 +5,9 @@ using UnityEngine.UI;
 
 public class Charater : MonoBehaviour
 {
-    enum State
-    {
-        Idle,
-        Walk,
-        WalkToAttack,
-        Attack,
-        Spell
-    }
+
 
     public Champion champion;
-
-    [SerializeField]
-    State state;
 
     [SerializeField]
     UIFollowTarget uI;
@@ -57,18 +47,22 @@ public class Charater : MonoBehaviour
         champion.SkillPassive();
         if (InputManager.m_KeyDownQ)
         {
+            champion.StopReCall();
             champion.SkillQ();
         }
         if (InputManager.m_KeyDownW)
         {
+            champion.StopReCall();
             champion.SkillW();
         }
         if (InputManager.m_KeyDownE)
         {
+            champion.StopReCall();
             champion.SkillE();
         }
         if (InputManager.m_KeyDownR)
         {
+            champion.StopReCall();
             champion.SkillR();
         }
 
@@ -77,20 +71,25 @@ public class Charater : MonoBehaviour
             UIManager.instace.ClickShop();
         }
 
-        switch (state)
+        if (InputManager.m_KeyDownB)
         {
-            case State.Idle:
+            champion.ReCall();
+        }
+
+        switch (champion.state)
+        {
+            case Champion.State.Idle:
                 break;
-            case State.Walk:
+            case Champion.State.Walk:
                 Move();
                 break;
-            case State.WalkToAttack:
+            case Champion.State.WalkToAttack:
                 MoveToAttack();
                 break;
-            case State.Attack:
+            case Champion.State.Attack:
                 Attack();
                 break;
-            case State.Spell:
+            case Champion.State.Spell:
                 break;
             default:
                 break;
@@ -118,7 +117,7 @@ public class Charater : MonoBehaviour
             attacking = false;
             rb2d.velocity = Vector2.zero;
             targetAttack = null;
-            state = State.Idle;
+            champion.state = Champion.State.Idle;
         }
     }
 
@@ -178,21 +177,21 @@ public class Charater : MonoBehaviour
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
         RaycastHit2D r = Physics2D.Raycast(mousePos, Vector2.zero);
-        switch (state)
+        switch (champion.state)
         {
-            case State.Idle:
+            case Champion.State.Idle:
                 Check(r);
                 break;
-            case State.Walk:
+            case Champion.State.Walk:
                 Check(r);
                 break;
-            case State.WalkToAttack:
+            case Champion.State.WalkToAttack:
                 Check(r);
                 break;
-            case State.Attack:
+            case Champion.State.Attack:
                 Check(r);
                 break;
-            case State.Spell:
+            case Champion.State.Spell:
                 break;
             default:
                 break;
@@ -203,11 +202,12 @@ public class Charater : MonoBehaviour
     {
         if (r.collider && r.collider.tag == "Minion")
         {
-            print("ok");
             if (r.collider.GetComponent<Creep>().team != champion.team)
             {
                 targetAttack = r.collider.gameObject;
-                state = State.WalkToAttack;
+                champion.state = Champion.State.WalkToAttack;
+
+                champion.StopReCall();
             }
         }
         else if (r.collider && r.collider.tag == "Turret" && r.collider.GetComponent<Turret>().team != champion.team)
@@ -215,7 +215,9 @@ public class Charater : MonoBehaviour
             if (r.collider.GetComponent<Turret>().team != champion.team)
             {
                 targetAttack = r.collider.gameObject;
-                state = State.WalkToAttack;
+                champion.state = Champion.State.WalkToAttack;
+
+                champion.StopReCall();
             }
         }
         else
@@ -223,9 +225,11 @@ public class Charater : MonoBehaviour
             attacking = false;
             targetAttack = null;
             targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-            state = State.Walk;
+            champion.state = Champion.State.Walk;
 
             Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
+
+            champion.StopReCall();
         }
     }
 
@@ -241,18 +245,18 @@ public class Charater : MonoBehaviour
 
                 rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed;
 
-                state = State.WalkToAttack;
+                champion.state = Champion.State.WalkToAttack;
             }
             else
             {
                 rb2d.velocity = Vector2.zero;
 
-                state = State.Attack;
+                champion.state = Champion.State.Attack;
             }
         }
         else
         {
-            state = State.Idle;
+            champion.state = Champion.State.Idle;
             attacking = false;
         }
     }
@@ -290,7 +294,7 @@ public class Charater : MonoBehaviour
             attacking = false;
             targetPos = Vector2.zero;
             rb2d.velocity = Vector2.zero;
-            state = State.Idle;
+            champion.state = Champion.State.Idle;
         }
     }
 
@@ -303,33 +307,15 @@ public class Charater : MonoBehaviour
                 Vector2 dir = targetPos - (Vector2)transform.position;
 
                 rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed;
-                state = State.Walk;
+                champion.state = Champion.State.Walk;
             }
             else
             {
-                state = State.Idle;
+                champion.state = Champion.State.Idle;
                 targetPos = Vector2.zero;
                 rb2d.velocity = Vector2.zero;
             }
         }
     }
 
-    public void TakeDamage(GameObject g, int dmg, Vector2 target)
-    {
-        float damage = CongThuc.LayDamage(dmg, champion.propertyChampion.arrmor_Real);
-
-       champion.propertyChampion.healthPointSecond -= (int)damage;
-
-        Vector2 rectPos = target;
-        rectPos = new Vector2(
-            (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
-            (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
-
-        UIManager.instace.MakeTextDamage(rectPos, ((int)damage).ToString());
-    }
-
-    public void TakeHealth(int amount)
-    {
-        currentHealth = (int)Mathf.Clamp(currentHealth + amount, 0, champion.propertyChampion.healthPoint);
-    }
 }

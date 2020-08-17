@@ -58,6 +58,9 @@ public class Mananger : MonoBehaviour
     [SerializeField]
     Texture2D m2;
 
+    public GameObject fountainRed;
+    public GameObject fountainBlue;
+
     private void Awake()
     {
         if (!instance)

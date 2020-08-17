@@ -115,7 +115,7 @@ public class Turret : MonoBehaviour
                 }
                 else if (targetAttack.GetComponent<Charater>())
                 {
-                    targetAttack.GetComponent<Charater>().TakeDamage(gameObject, property.damage, targetAttack.transform.position);
+                    targetAttack.GetComponent<Charater>().champion.TakeDamage(gameObject, property.damage, targetAttack.transform.position);
                 }
                 attackSpeedSecond = 1 / property.attackSpeed;
 

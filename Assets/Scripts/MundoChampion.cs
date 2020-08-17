@@ -36,8 +36,22 @@ public class MundoChampion : Champion
 
     private void Update()
     {
-        PerSecond();
+        if (recalling)
+        {
+            timeRecall += Time.deltaTime;
+            if (timeRecall >= 4.5f)
+            {
+                recalling = false;
+                timeRecall = 0;
+                if (GameObject.Find("Effect Recall"))
+                {
+                    Destroy(GameObject.Find("Effect Recall"));
+                }
+                SpawnAtFountain();
+            }
+        }
 
+        PerSecond();
 
         if (timeCoolDownSkillQSecond > 0)
         {

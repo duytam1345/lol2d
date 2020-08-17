@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6854373095369591058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3763407709369983104}
+  - component: {fileID: 1497711705632029320}
+  m_Layer: 5
+  m_Name: Amplifying Tome
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3763407709369983104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6854373095369591058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1497711705632029320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6854373095369591058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8714b4e4ba95b458b8bf576ceeea17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imgTarget: {fileID: 0}
+  childItem: []
+  parentItem: []
+  where: 1
+  type: 0
+  typeRequires: 0
+  nameItem: "S\xE1ch cu"
+  infoItem: "+20 ph\xE9p"
+  costItem: 435
+  sprite: {fileID: 21300000, guid: b33169dcc952fd041bab80ba054f1daf, type: 3}
+  champion: {fileID: 0}
+  prefabItem: {fileID: 0}
+  indexInventory: 0
+  magic: 20

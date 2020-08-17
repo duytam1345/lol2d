@@ -56,6 +56,14 @@ public class PropertyChampion
     public Dictionary<string, float> magicDamageExtra = new Dictionary<string, float>();
     public int magicDamage_Real;
 
+    public int lifeSteel;
+    public Dictionary<string, float> lifeSteelExtra = new Dictionary<string, float>();
+    public int lifeSteel_Real;
+
+    public int spellVamp;
+    public Dictionary<string, float> spellVampExtra = new Dictionary<string, float>();
+    public int spellVamp_Real;
+
     public int arrmor;
     public Dictionary<string, float> arrmorExtra = new Dictionary<string, float>();
     public int arrmor_Real;
@@ -74,7 +82,7 @@ public class PropertyChampion
 
     public void UpdateValue()
     {
-        //Physics Damage
+        // Sát thương vật lý
         physicsDamage_Real = physicsDamage;
 
         foreach (var item in physicsDamageExtra.Values)
@@ -82,7 +90,7 @@ public class PropertyChampion
             physicsDamage_Real += (int)item;
         }
 
-        //Magic Damage
+        // Sức mạnh phép thuật
         magicDamage_Real = magicDamage;
 
         foreach (var item in magicDamageExtra.Values)
@@ -90,7 +98,7 @@ public class PropertyChampion
             magicDamage_Real += (int)item;
         }
 
-        //Health
+        //Máu
         healthPoint_Real = healthPoint;
 
         foreach (var item in healthPointExtra.Values)
@@ -98,7 +106,7 @@ public class PropertyChampion
             healthPoint_Real += (int)item;
         }
 
-        //Health Regen
+        //Phục hồi máu
         healthRegen_Real = healthRegen;
 
         foreach (var item in healthRegenExtra.Values)
@@ -106,7 +114,7 @@ public class PropertyChampion
             healthRegen_Real += item;
         }
 
-        //Mana
+        //Năng lượng
         manaPoint_Real = manaPoint;
 
         foreach (var item in manaPointExtra.Values)
@@ -114,7 +122,7 @@ public class PropertyChampion
             manaPoint_Real += (int)item;
         }
 
-        //Mana Regen
+        //Phục hồi năng lượng
         manaRegen_Real = manaRegen;
 
         foreach (var item in manaRegenExtra.Values)
@@ -122,15 +130,23 @@ public class PropertyChampion
             manaRegen_Real += item;
         }
 
-        //Attack Speed
-        attackSpeed_Real = attackSpeed;
+        //Hút máu
+        lifeSteel_Real = lifeSteel;
 
-        foreach (var item in attackSpeedExtra.Values)
+        foreach (var item in lifeSteelExtra.Values)
         {
-            attackSpeed_Real += (int)item;
+            lifeSteel_Real += (int)item;
         }
 
-        //Move Speed
+        //Hút máu phép
+        spellVamp_Real = spellVamp;
+
+        foreach (var item in spellVampExtra.Values)
+        {
+            spellVamp_Real += (int)item;
+        }
+
+        //Tốc độ di chuyển
         moveSpeed_Real = moveSpeed;
 
         foreach (var item in moveSpeedExtra.Values)
@@ -138,7 +154,7 @@ public class PropertyChampion
             moveSpeed_Real += (int)item;
         }
 
-        //Arrmor
+        //Giáp
         arrmor_Real = arrmor;
 
         foreach (var item in arrmorExtra.Values)
@@ -146,7 +162,7 @@ public class PropertyChampion
             arrmor_Real += (int)item;
         }
 
-        //Magic resistance
+        //Kháng phép
         magicResistance_Real = magicResistance;
 
         foreach (var item in magicResistanceExtra.Values)
@@ -154,7 +170,7 @@ public class PropertyChampion
             magicResistance_Real += (int)item;
         }
 
-        //Attack Speed
+        //Tốc độ đánh
         attackSpeed_Real = attackSpeed;
         float percent = bonusAttackAtLv1;
         foreach (var item in attackSpeedExtra.Values)
@@ -163,7 +179,7 @@ public class PropertyChampion
         }
         attackSpeed_Real += (attackSpeed / 100 * percent);
 
-        //Cooldown
+        //Hồi chiêu
         cooldown_Real = cooldown;
 
         foreach (var item in cooldownExtra.Values)
@@ -171,7 +187,7 @@ public class PropertyChampion
             cooldown_Real += (int)item;
         }
 
-        //Crit Rate
+        //Tỉ lệ chí mạng
         critRate_Real = critRate;
 
         foreach (var item in critRateExtra.Values)
@@ -199,6 +215,17 @@ public class TuiDo
 #endregion
 public class Champion : MonoBehaviour
 {
+    public enum State
+    {
+        Idle,
+        Walk,
+        WalkToAttack,
+        Attack,
+        Spell
+    }
+
+    public State state;
+
     private void Start()
     {
         BtnItem.KhiTuiDoClick += KhiChon1Item;
@@ -275,6 +302,11 @@ public class Champion : MonoBehaviour
     public virtual void SkillR() { }
     public virtual void SkillD() { }
     public virtual void SkillF() { }
+
+    [Header("Biến về")]
+    public bool recalling;
+    public float timeRecall;
+    public GameObject prefabEffect;
 
     [Header("Khác")]
     public float timePerSecond;
@@ -499,6 +531,66 @@ public class Champion : MonoBehaviour
         else
         {
             return 0;
+        }
+    }
+
+    public void TakeDamage(GameObject g, int dmg, Vector2 target)
+    {
+        float damage = CongThuc.LayDamage(dmg, propertyChampion.arrmor_Real);
+
+        propertyChampion.healthPointSecond -= (int)damage;
+
+        Vector2 rectPos = target;
+        rectPos = new Vector2(
+            (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
+            (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
+
+        UIManager.instace.MakeTextDamage(rectPos, ((int)damage).ToString());
+    }
+
+    public void TakeHealth(float amount)
+    {
+        float result = Mathf.Lerp(0, propertyChampion.healthPoint_Real, propertyChampion.healthPointSecond + amount);
+        if (result - propertyChampion.healthPointSecond > 0)
+        {
+            propertyChampion.healthPointSecond += result - propertyChampion.healthPointSecond;
+            UIManager.instace.MakeTextHeal(transform.position, result.ToString());
+        }
+    }
+
+    public void SpawnAtFountain()
+    {
+        transform.position = (team == Team.Blue ? Mananger.instance.fountainBlue.transform.position : Mananger.instance.fountainRed.transform.position);
+    }
+
+    public void ReCall()
+    {
+        if (!recalling)
+        {
+            recalling = true;
+            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            state = State.Idle;
+            UIManager.instace.MakeReCallBar();
+
+            GameObject e = Instantiate(prefabEffect, transform.position, Quaternion.identity);
+            e.name = "Effect Recall";
+        }
+    }
+
+    public void StopReCall()
+    {
+        if (recalling)
+        {
+            recalling = false;
+            timeRecall = 0;
+            if (GameObject.Find("Effect Recall"))
+            {
+                Destroy(GameObject.Find("Effect Recall"));
+            }
+            if (UIManager.instace.currentReCallUI)
+            {
+                Destroy(UIManager.instace.currentReCallUI.gameObject);
+            }
         }
     }
 }

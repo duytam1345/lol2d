@@ -35,7 +35,7 @@ public class ArrowOfMinion : MonoBehaviour
             {
                 if (target.tag == "Player")
                 {
-                    target.GetComponent<Charater>().TakeDamage(g,(int)damage, target.transform.position);
+                    target.GetComponent<Charater>().champion.TakeDamage(g,(int)damage, target.transform.position);
 
                     Destroy(gameObject);
                 }

@@ -143,6 +143,11 @@ public class UIManager : MonoBehaviour
     public GameObject imageItem5;
     public GameObject imageItem6;
 
+    [Header("Biến về")]
+    [SerializeField]
+    GameObject prefabReCallUI;
+    public GameObject currentReCallUI;
+
     private void Awake()
     {
         if (!instace)
@@ -347,6 +352,14 @@ public class UIManager : MonoBehaviour
                 gT1B.GetComponent<Item>().where = Item.Where.Requires;
                 break;
             case Item.TypeRequires.T12:
+                GameObject gT12A = Instantiate(item.gameObject, p.transform.GetChild(0));
+                gT12A.GetComponent<Item>().where = Item.Where.Requires;
+
+                GameObject gT12B = Instantiate(item.childItem[0].gameObject, p.transform.GetChild(1));
+                gT12B.GetComponent<Item>().where = Item.Where.Requires;
+
+                GameObject gT12C = Instantiate(item.childItem[1].gameObject, p.transform.GetChild(2));
+                gT12C.GetComponent<Item>().where = Item.Where.Requires;
                 break;
             case Item.TypeRequires.T13:
                 break;
@@ -521,5 +534,16 @@ public class UIManager : MonoBehaviour
 
         //    charater.champion.tuiDo.item[Convert.ToInt32(charater.champion.tuiDo.ItemSelected.imgTarget.name)] = null;
         //}
+    }
+
+    public void MakeReCallBar()
+    {
+        if(currentReCallUI)
+        {
+            Destroy(currentReCallUI);
+        }
+
+        GameObject g = Instantiate(prefabReCallUI, GameObject.Find("Canvas").transform);
+        currentReCallUI = g;
     }
 }
