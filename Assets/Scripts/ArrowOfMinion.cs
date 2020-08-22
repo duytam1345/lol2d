@@ -33,13 +33,13 @@ public class ArrowOfMinion : MonoBehaviour
 
             if (Vector2.Distance(transform.position, target.transform.position) <= 1)
             {
-                if (target.tag == "Player")
+                if (target.GetComponent<Charater>())
                 {
                     target.GetComponent<Charater>().champion.TakeDamage(g,(int)damage, target.transform.position);
 
                     Destroy(gameObject);
                 }
-                else if (target.tag == "Minion")
+                else if (target.GetComponent<Creep>())
                 {
                     target.GetComponent<Creep>().TakeDamage(g, (int)damage);
 
@@ -51,7 +51,7 @@ public class ArrowOfMinion : MonoBehaviour
                     UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
                     Destroy(gameObject);
                 }
-                else if (target.tag == "Turret")
+                else if (target.GetComponent<Turret>())
                 {
                     target.GetComponent<Turret>().TakeDamage(g, (int)damage);
 
@@ -61,6 +61,11 @@ public class ArrowOfMinion : MonoBehaviour
                         (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
 
                     UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
+                    Destroy(gameObject);
+                }
+                else if (target.GetComponent<H28GOfHeimerdinger>())
+                {
+                    target.GetComponent<H28GOfHeimerdinger>().TakeDamage(g, (int)damage);
                     Destroy(gameObject);
                 }
             }

@@ -3,6 +3,78 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class ValueExtra
+{
+    public float timeLeft;
+    public float value;
+}
+
+[System.Serializable]
+public class Property
+{
+    public float rangeToAttack;
+
+    public float attackSpeed;
+
+    public int healthPoint;
+
+    public int damage;
+
+    public float arrmor;
+    public Dictionary<string, ValueExtra> arrmorExtra = new Dictionary<string, ValueExtra>();
+    public float arrmor_Real;
+
+    public float magicResistance;
+    public Dictionary<string, ValueExtra> magicResistanceExtra = new Dictionary<string, ValueExtra>();
+    public float magicResistance_Real;
+
+    public float moveSpeedBase;
+    public Dictionary<string, ValueExtra> moveSpeedExtra = new Dictionary<string, ValueExtra>();//tốc độ phụ thêm là con số, không phải phần trăm
+    public float moveSpeedCurrent;
+
+    public void UpdateValue()
+    {
+        //Giáp
+        arrmor_Real = arrmor;
+        foreach (var item in arrmorExtra.Values)
+        {
+            arrmor_Real += item.value;
+        }
+        //
+
+        //Kháng phép
+        magicResistance_Real = magicResistance;
+        foreach (var item in magicResistanceExtra.Values)
+        {
+            magicResistance_Real += item.value;
+        }
+        //
+
+        //Di chuyển
+        moveSpeedCurrent = moveSpeedBase;
+        foreach (var item in moveSpeedExtra.Values)
+        {
+            moveSpeedCurrent += item.value;
+
+            item.timeLeft -= Time.deltaTime;
+        }
+        List<string> keys = new List<string>();
+        foreach (var item in moveSpeedExtra.Keys)
+        {
+            if (moveSpeedExtra[item].timeLeft <= 0)
+            {
+                keys.Add(item);
+            }
+        }
+        foreach (var item in keys)
+        {
+            moveSpeedExtra.Remove(item);
+        }
+        //
+    }
+}
+
 public class Turret : MonoBehaviour
 {
     enum State
@@ -14,13 +86,11 @@ public class Turret : MonoBehaviour
 
     public Team team;
 
-    [SerializeField]
-    Property property;
+    public Property property;
 
     public UIFollowTarget ui;
 
-    [SerializeField]
-    int currentHealth;
+    public int currentHealth;
 
     [SerializeField]
     float attackSpeedSecond;
@@ -85,6 +155,14 @@ public class Turret : MonoBehaviour
                         minDistance = Vector2.Distance(transform.position, item.transform.position);
                     }
                 }
+                else if (item.GetComponent<H28GOfHeimerdinger>() && item.GetComponent<H28GOfHeimerdinger>().team != team)
+                {
+                    if (Vector2.Distance(transform.position, item.transform.position) < minDistance)
+                    {
+                        minG = item.gameObject;
+                        minDistance = Vector2.Distance(transform.position, item.transform.position);
+                    }
+                }
             }
 
             if (minG)
@@ -101,6 +179,16 @@ public class Turret : MonoBehaviour
         {
             targetAttack = null;
         }
+        if (targetAttack)
+        {
+            if (targetAttack.GetComponent<Champion>())
+            {
+                if (targetAttack.GetComponent<Champion>().state == Champion.State.Death)
+                {
+                    targetAttack = null;
+                }
+            }
+        }
 
         if (targetAttack)
         {
@@ -115,15 +203,14 @@ public class Turret : MonoBehaviour
                 }
                 else if (targetAttack.GetComponent<Charater>())
                 {
-                    targetAttack.GetComponent<Charater>().champion.TakeDamage(gameObject, property.damage, targetAttack.transform.position);
+                    float resultDmg = CongThuc.LayDamage(property.damage, targetAttack.GetComponent<Champion>().propertyChampion.arrmor_Real);
+                    targetAttack.GetComponent<Charater>().champion.TakeDamage(gameObject, (int)resultDmg, targetAttack.transform.position);
+                }
+                else if (targetAttack.GetComponent<H28GOfHeimerdinger>())
+                {
+                    targetAttack.GetComponent<H28GOfHeimerdinger>().TakeDamage(gameObject, property.damage);
                 }
                 attackSpeedSecond = 1 / property.attackSpeed;
-
-                Vector2 rectPos = targetAttack.transform.position;
-                rectPos = new Vector2(
-                    (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
-                    (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
-                UIManager.instace.MakeTextDamage(rectPos, property.damage.ToString());
             }
         }
         else
@@ -138,7 +225,7 @@ public class Turret : MonoBehaviour
         currentHealth -= amount;
         if (ui)
         {
-            ui.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
+            ui.transform.GetChild(3).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
         }
 
         if (currentHealth <= 0)
@@ -149,6 +236,9 @@ public class Turret : MonoBehaviour
 
     void Death()
     {
+        FindObjectOfType<Charater>().champion.propertyChampion.money += 250;
+        UIManager.instace.MakeTextMoney(transform.position, "250g");
+
         state = State.Destroy;
         team = Team.Red;
         anim.SetBool("Death", true);

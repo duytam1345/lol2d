@@ -14,11 +14,6 @@ public class Charater : MonoBehaviour
 
     public int currentHealth;
 
-    [SerializeField]
-    float attackSpeedSecond;
-
-    [SerializeField]
-    GameObject prefabHit;
 
     [SerializeField]
     Rigidbody2D rb2d;
@@ -28,9 +23,6 @@ public class Charater : MonoBehaviour
 
     [SerializeField]
     Vector2 targetPos;
-
-    [SerializeField]
-    GameObject targetAttack;
 
     [SerializeField]
     bool attacking;
@@ -66,6 +58,16 @@ public class Charater : MonoBehaviour
             champion.SkillR();
         }
 
+        if (InputManager.m_KeyDownD)
+        {
+            champion.spellD.Use(champion);
+        }
+
+        if (InputManager.m_KeyDownF)
+        {
+            champion.spellF.Use(champion);
+        }
+
         if (InputManager.m_KeyDownP)
         {
             UIManager.instace.ClickShop();
@@ -87,17 +89,12 @@ public class Charater : MonoBehaviour
                 MoveToAttack();
                 break;
             case Champion.State.Attack:
-                Attack();
+                champion.LoadAttack();
                 break;
             case Champion.State.Spell:
                 break;
             default:
                 break;
-        }
-
-        if (attackSpeedSecond > 0)
-        {
-            attackSpeedSecond -= Time.deltaTime;
         }
 
         SetCursor();
@@ -116,7 +113,7 @@ public class Charater : MonoBehaviour
         {
             attacking = false;
             rb2d.velocity = Vector2.zero;
-            targetAttack = null;
+            champion.targetAttack = null;
             champion.state = Champion.State.Idle;
         }
     }
@@ -193,6 +190,12 @@ public class Charater : MonoBehaviour
                 break;
             case Champion.State.Spell:
                 break;
+            case Champion.State.Death:
+                if (champion.canMove)
+                {
+                    Check(r);
+                }
+                break;
             default:
                 break;
         }
@@ -202,9 +205,9 @@ public class Charater : MonoBehaviour
     {
         if (r.collider && r.collider.tag == "Minion")
         {
-            if (r.collider.GetComponent<Creep>().team != champion.team)
+            if (r.collider.GetComponent<Creep>().team != champion.team && champion.canAttack)
             {
-                targetAttack = r.collider.gameObject;
+                champion.targetAttack = r.collider.gameObject;
                 champion.state = Champion.State.WalkToAttack;
 
                 champion.StopReCall();
@@ -212,9 +215,9 @@ public class Charater : MonoBehaviour
         }
         else if (r.collider && r.collider.tag == "Turret" && r.collider.GetComponent<Turret>().team != champion.team)
         {
-            if (r.collider.GetComponent<Turret>().team != champion.team)
+            if (r.collider.GetComponent<Turret>().team != champion.team && champion.canAttack)
             {
-                targetAttack = r.collider.gameObject;
+                champion.targetAttack = r.collider.gameObject;
                 champion.state = Champion.State.WalkToAttack;
 
                 champion.StopReCall();
@@ -223,9 +226,9 @@ public class Charater : MonoBehaviour
         else
         {
             attacking = false;
-            targetAttack = null;
-            targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
             champion.state = Champion.State.Walk;
+            champion.targetAttack = null;
+            targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
 
             Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
 
@@ -235,15 +238,15 @@ public class Charater : MonoBehaviour
 
     void MoveToAttack()
     {
-        if (targetAttack)
+        if (champion.targetAttack)
         {
             targetPos = Vector2.zero;
             attacking = true;
-            if (Vector2.Distance(transform.position, targetAttack.transform.position) > champion.propertyChampion.attackRange)
+            if (Vector2.Distance(transform.position, champion.targetAttack.transform.position) > champion.propertyChampion.attackRange_Real)
             {
-                Vector2 dir = (Vector2)targetAttack.transform.position - (Vector2)transform.position;
+                Vector2 dir = (Vector2)champion.targetAttack.transform.position - (Vector2)transform.position;
 
-                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed;
+                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed_Real;
 
                 champion.state = Champion.State.WalkToAttack;
             }
@@ -261,43 +264,6 @@ public class Charater : MonoBehaviour
         }
     }
 
-    void Attack()
-    {
-        if (targetAttack)
-        {
-            if (attackSpeedSecond <= 0)
-            {
-                if (targetAttack.GetComponent<Creep>())
-                {
-                    targetAttack.GetComponent<Creep>().TakeDamage(gameObject, champion.propertyChampion.physicsDamage_Real);
-                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, champion.propertyChampion.physicsDamage_Real.ToString());
-                }
-                else if (targetAttack.GetComponent<Turret>())
-                {
-                    targetAttack.GetComponent<Turret>().TakeDamage(gameObject, champion.propertyChampion.physicsDamage_Real);
-                    UIManager.instace.MakeTextDamage(targetAttack.transform.position, champion.propertyChampion.physicsDamage_Real.ToString());
-                }
-
-                attackSpeedSecond = 1 / champion.propertyChampion.attackSpeed;
-
-                Vector2 pos = new Vector2(
-                    Random.Range(targetAttack.transform.position.x - .5f, targetAttack.transform.position.x + .5f),
-                    Random.Range(targetAttack.transform.position.y - .5f, targetAttack.transform.position.y + .5f));
-
-                Vector3 rot = new Vector3(0, 0, Random.Range(0, 360));
-
-                GameObject e = Instantiate(prefabHit, pos, Quaternion.Euler(rot.x, rot.y, rot.z));
-            }
-        }
-        else
-        {
-            attacking = false;
-            targetPos = Vector2.zero;
-            rb2d.velocity = Vector2.zero;
-            champion.state = Champion.State.Idle;
-        }
-    }
-
     void Move()
     {
         if (targetPos != Vector2.zero)
@@ -306,7 +272,7 @@ public class Charater : MonoBehaviour
             {
                 Vector2 dir = targetPos - (Vector2)transform.position;
 
-                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed;
+                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed_Real;
                 champion.state = Champion.State.Walk;
             }
             else

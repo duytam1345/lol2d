@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6271845222846002784}
   - component: {fileID: 6271845222846002785}
-  - component: {fileID: 6271845222846002790}
   - component: {fileID: 6271845222846002791}
   - component: {fileID: 6271845222846002788}
   m_Layer: 0
@@ -53,7 +52,16 @@ MonoBehaviour:
   direction: 0
   targetPos: {x: 0, y: 0}
   ui: {fileID: 0}
-  property: {fileID: 6271845222846002790}
+  property:
+    rangeToAttack: 2.5
+    attackSpeed: 0.725
+    damage: 50
+    healthPoint: 350
+    arrmor: 0
+    magicResistance: 0
+    moveSpeedBase: 1
+    moveSpeedExtra: 0
+    moveSpeedcurrent: 0
   currentHealth: 350
   timeAttackSecond: 0
   rb: {fileID: 6271845222846002791}
@@ -64,24 +72,6 @@ MonoBehaviour:
   curTarget: {fileID: 0}
   arrow: {fileID: 5108769264773151726, guid: f18f7814f7efe2545915111bd275515e, type: 3}
   damage: 15
---- !u!114 &6271845222846002790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6271845222846002789}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12963951100512647b4811be8c9c4a6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rangeToAttack: 3
-  attackSpeed: 0.625
-  damage: 20
-  healthPoint: 350
-  manaPoint: 0
-  moveSpeed: 1
 --- !u!50 &6271845222846002791
 Rigidbody2D:
   serializedVersion: 4

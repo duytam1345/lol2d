@@ -21,29 +21,22 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     Image healthBarOnPlayer;
+    [SerializeField]
+    Image manaBarOnPlayer;
 
     [SerializeField]
     Image healthBar;
+    [SerializeField]
+    Image manaBar;
 
     [SerializeField]
     Text textHealth;
+    [SerializeField]
+    Text textMana;
 
     [Header("Selected Object")]
     [SerializeField]
     GameObject gSelected;
-
-    [SerializeField]
-    Image imageSelected;
-
-    [Header("Icon")]
-    [SerializeField]
-    Sprite spriteMinionCasterBlue;
-    [SerializeField]
-    Sprite spriteMinionCasterRed;
-    [SerializeField]
-    Sprite spriteTurretBlue;
-    [SerializeField]
-    Sprite spriteTurretRed;
 
     [Header("Skill")]
     [SerializeField]
@@ -57,18 +50,51 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Text tCooldown;
 
+    [Header("UI")]
+
+    public Image imageAvatar;
+    public GameObject barTopHealth;
+
+    [Header("Hiển thị hiệu ứng hiện tại")]
     [SerializeField]
-    Image imageSkillQ;
+    GameObject prefabSlot;
     [SerializeField]
-    Image imageSkillW;
+    GameObject containListEffect;
+    public Dictionary<string, SlotListEffect> listEffect = new Dictionary<string, SlotListEffect>();
+
+    [Header("Hiển thị trạng thái hiện tại")]
     [SerializeField]
-    Image imageSkillE;
+    GameObject containListState;
+
+    [Header("Hiển thị bảng nâng cấp chiêu")]
+    public GameObject panelUpgradeSkill;
+    public Button btnQ;
+    public Button btnW;
+    public Button btnE;
+    public Button btnR;
+    public Transform listNodeQ;
+    public Transform listNodeW;
+    public Transform listNodeE;
+    public Transform listNodeR;
+
+    [Header("Hiển thị hồi chiêu")]
+
+    public Image imageSkillQBg;
+    public Image imageSkillQ;
+    public Image imageSkillWBg;
+    public Image imageSkillW;
+    public Image imageSkillEBg;
+    public Image imageSkillE;
+    public Image imageSkillRBg;
+    public Image imageSkillR;
+
     [SerializeField]
-    Image imageSkillR;
+    Image imageSpellD;
     [SerializeField]
-    Image imageSkillD;
-    [SerializeField]
-    Image imageSkillF;
+    Image imageSpellF;
+
+
+    [Header("Hiển thị thông tin tướng")]
 
     [SerializeField]
     Text textPhysicsDamage;
@@ -87,26 +113,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Text textMoveSpeed;
 
+    [Header("Hiển thị tiền và trang bị")]
+
     [SerializeField]
     Text textMoney;
-
-    [SerializeField]
-    Text textSelectedPhysicsDamage;
-    [SerializeField]
-    Text textSelectedMagicDamage;
-    [SerializeField]
-    Text textSelectedArrmor;
-    [SerializeField]
-    Text textSelectedMagicResistance;
-    [SerializeField]
-    Text textSelectedAttackSpeed;
-    [SerializeField]
-    Text textSelectedCooldown;
-    [SerializeField]
-    Text textSelectedCritRate;
-    [SerializeField]
-    Text textSelectedMoveSpeed;
-
 
     [SerializeField]
     Item itemSelected;
@@ -208,25 +218,25 @@ public class UIManager : MonoBehaviour
         healthBar.fillAmount = (float)champion.propertyChampion.healthPointSecond / (float)champion.propertyChampion.healthPoint_Real;
         textHealth.text = (int)champion.propertyChampion.healthPointSecond + "/" + (int)champion.propertyChampion.healthPoint_Real;
 
+        manaBarOnPlayer.fillAmount = (float)champion.propertyChampion.manaPointSecond / (float)champion.propertyChampion.manaPoint_Real;
+        manaBar.fillAmount = (float)champion.propertyChampion.manaPointSecond / (float)champion.propertyChampion.manaPoint_Real;
+        textMana.text = (int)champion.propertyChampion.manaPointSecond + "/" + (int)champion.propertyChampion.manaPoint_Real;
+
         imageSkillQ.fillAmount = champion.timeCoolDownSkillQSecond / champion.timeCoolDownSkillQ;
         imageSkillW.fillAmount = champion.timeCoolDownSkillWSecond / champion.timeCoolDownSkillW;
         imageSkillE.fillAmount = champion.timeCoolDownSkillESecond / champion.timeCoolDownSkillE;
         imageSkillR.fillAmount = champion.timeCoolDownSkillRSecond / champion.timeCoolDownSkillR;
 
+        imageSpellD.fillAmount = champion.spellD.timeCooldownSecond / champion.spellD.timeCooldown;
+        imageSpellF.fillAmount = champion.spellF.timeCooldownSecond / champion.spellF.timeCooldown;
+
         textPhysicsDamage.text = champion.propertyChampion.physicsDamage_Real.ToString();
-
         textMagicDamage.text = champion.propertyChampion.magicDamage_Real.ToString();
-
         textArrmor.text = champion.propertyChampion.arrmor_Real.ToString();
-
         textMagicResistance.text = champion.propertyChampion.magicResistance_Real.ToString();
-
         textAttackSpeed.text = Math.Round(champion.propertyChampion.attackSpeed_Real, 3).ToString();
-
         textCooldown.text = champion.propertyChampion.cooldown_Real.ToString() + "%";
-
         textCritRate.text = champion.propertyChampion.critRate_Real.ToString() + "%";
-
         textMoveSpeed.text = champion.propertyChampion.moveSpeed_Real.ToString();
 
         textMoney.text = ((int)champion.propertyChampion.money).ToString();
@@ -255,26 +265,7 @@ public class UIManager : MonoBehaviour
         if (g != null)
         {
             gSelected.SetActive(true);
-            if (g.GetComponent<Creep>())
-            {
-                Creep c = g.GetComponent<Creep>();
-                imageSelected.sprite = (c.team == Team.Blue ?
-                    spriteMinionCasterBlue : spriteMinionCasterRed);
-
-                textSelectedPhysicsDamage.text = c.property.damage.ToString();
-                textSelectedMagicDamage.text = "0";
-                textSelectedArrmor.text = c.property.arrmor.ToString();
-                textSelectedMagicResistance.text = c.property.magicResistance.ToString(); ;
-                textSelectedAttackSpeed.text = c.property.attackSpeed.ToString();
-                textSelectedCooldown.text = "0%";
-                textSelectedCritRate.text = "0%";
-                textSelectedMoveSpeed.text = c.property.moveSpeed.ToString();
-            }
-            else if (g.GetComponent<Creep>())
-            {
-                imageSelected.sprite = (g.GetComponent<Turret>().team == Team.Blue ?
-                    spriteTurretBlue : spriteTurretRed);
-            }
+            gSelected.GetComponent<SelectedObject>().g = g;
         }
         else
         {
@@ -282,29 +273,46 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void MouseEnterInfo(GameObject g)
+    public void MouseEnterInfo(GameObject game)
     {
-        //gInfoSkill.SetActive(true);
+        gInfoSkill.SetActive(true);
+        Champion c = charater.champion;
 
-        //Skill skill = g.GetComponent<Skill>();
-        //tNameSkill.text = (skill.typeSkill == Skill.TypeSkill.passive ? "(p) " : "") + skill.nameSkill;
-        //tCostSkill.text = skill.costSkill + " ";
-        //switch (skill.typeCost)
-        //{
-        //    case Skill.TypeCost.Mana:
-        //        tCostSkill.text += "Năng lượng";
-        //        break;
-        //    case Skill.TypeCost.Health:
-        //        tCostSkill.text += "Máu";
-        //        break;
-        //    case Skill.TypeCost.None:
-        //        tCostSkill.text += "Không tiêu hao";
-        //        break;
-        //    default:
-        //        break;
-        //}
-        //tCooldown.text = (skill.timeCooldown == 0 ? "" : skill.timeCooldown + " giây");
-        //tInfoSkill.text = skill.info;
+        if (game.name == "Skill Passive")
+        {
+            tNameSkill.text = c.namePassive;
+            tCostSkill.text = "";
+            tCooldown.text = "";
+            tInfoSkill.text = c.infoPassive;
+        }
+        else if (game.name == "Skill Q")
+        {
+            tNameSkill.text = c.nameSkillQ;
+            tCostSkill.text = c.costSkillQ;
+            tCooldown.text = c.timeCoolDownSkillQ + " giây";
+            tInfoSkill.text = c.infoSkillQ;
+        }
+        else if (game.name == "Skill W")
+        {
+            tNameSkill.text = c.nameSkillW;
+            tCostSkill.text = c.costSkillW;
+            tCooldown.text = c.timeCoolDownSkillW + " giây";
+            tInfoSkill.text = c.infoSkillW;
+        }
+        else if (game.name == "Skill E")
+        {
+            tNameSkill.text = c.nameSkillE;
+            tCostSkill.text = c.costSkillE;
+            tCooldown.text = c.timeCoolDownSkillE + " giây";
+            tInfoSkill.text = c.infoSkillE;
+        }
+        else if (game.name == "Skill R")
+        {
+            tNameSkill.text = c.nameSkillR;
+            tCostSkill.text = c.costSkillR;
+            tCooldown.text = c.timeCoolDownSkillR + " giây";
+            tInfoSkill.text = c.infoSkillR;
+        }
     }
 
     public void MouseExitInfo()
@@ -341,7 +349,7 @@ public class UIManager : MonoBehaviour
         switch (item.typeRequires)
         {
             case Item.TypeRequires.T1:
-                GameObject gT1 = Instantiate(item.gameObject,p.transform);
+                GameObject gT1 = Instantiate(item.gameObject, p.transform);
                 gT1.GetComponent<Item>().where = Item.Where.Requires;
                 break;
             case Item.TypeRequires.T11:
@@ -538,12 +546,169 @@ public class UIManager : MonoBehaviour
 
     public void MakeReCallBar()
     {
-        if(currentReCallUI)
+        if (currentReCallUI)
         {
             Destroy(currentReCallUI);
         }
 
         GameObject g = Instantiate(prefabReCallUI, GameObject.Find("Canvas").transform);
         currentReCallUI = g;
+    }
+
+    public void CreateSlotEffect(string key, IconEffect iconEffect)
+    {
+        GameObject g = Instantiate(prefabSlot, containListEffect.transform);
+        g.GetComponent<SlotListEffect>().iconEffect = iconEffect;
+
+        listEffect.Add(key, g.GetComponent<SlotListEffect>());
+    }
+
+    public void LoadPanelUpgradeSkill(Champion c)
+    {
+        btnQ.interactable = false;
+        btnW.interactable = false;
+        btnE.interactable = false;
+        btnR.interactable = false;
+
+        if (c.propertyChampion.level < 6)
+        {
+            btnQ.interactable = true;
+            btnW.interactable = true;
+            btnE.interactable = true;
+        }
+        else if (c.propertyChampion.level >= 6 && c.propertyChampion.level < 11)
+        {
+            if (c.levelSkillQ < 5)
+            {
+                btnQ.interactable = true;
+            }
+            if (c.levelSkillW < 5)
+            {
+                btnW.interactable = true;
+            }
+            if (c.levelSkillE < 5)
+            {
+                btnE.interactable = true;
+            }
+            if (c.levelSkillR < 1)
+            {
+                btnR.interactable = true;
+            }
+        }
+        else if (c.propertyChampion.level >= 11 && c.propertyChampion.level < 16)
+        {
+            if (c.levelSkillQ < 5)
+            {
+                btnQ.interactable = true;
+            }
+            if (c.levelSkillW < 5)
+            {
+                btnW.interactable = true;
+            }
+            if (c.levelSkillE < 5)
+            {
+                btnE.interactable = true;
+            }
+            if (c.levelSkillR < 2)
+            {
+                btnR.interactable = true;
+            }
+        }
+        else if (c.propertyChampion.level >= 16 && c.propertyChampion.level < 19)
+        {
+            if (c.levelSkillQ < 5)
+            {
+                btnQ.interactable = true;
+            }
+            if (c.levelSkillW < 5)
+            {
+                btnW.interactable = true;
+            }
+            if (c.levelSkillE < 5)
+            {
+                btnE.interactable = true;
+            }
+            if (c.levelSkillR < 3)
+            {
+                btnR.interactable = true;
+            }
+        }
+
+        StartCoroutine(ShowPanelUpgradeSkill(true));
+    }
+
+    IEnumerator ShowPanelUpgradeSkill(bool isShowUp)
+    {
+        if (isShowUp)
+        {
+            Vector2 v = panelUpgradeSkill.GetComponent<RectTransform>().sizeDelta;
+            while (v.y < 200)
+            {
+                v.y += 5;
+                panelUpgradeSkill.GetComponent<RectTransform>().sizeDelta = v;
+                yield return null;
+            }
+        }
+        else
+        {
+            Vector2 v = panelUpgradeSkill.GetComponent<RectTransform>().sizeDelta;
+            while (v.y > 100)
+            {
+                v.y -= 5;
+                panelUpgradeSkill.GetComponent<RectTransform>().sizeDelta = v;
+                yield return null;
+            }
+        }
+    }
+
+    public void BtnUpgradeSkill(string s)
+    {
+        if (s == "Q")
+        {
+            charater.champion.levelSkillQ++;
+        }
+        else if (s == "W")
+        {
+            charater.champion.levelSkillW++;
+        }
+        else if (s == "E")
+        {
+            charater.champion.levelSkillE++;
+        }
+        else if (s == "R")
+        {
+            charater.champion.levelSkillR++;
+        }
+        charater.champion.leftPointSkill--;
+        UpdateNodeSkill();
+        charater.champion.SetSkill();
+        if (charater.champion.leftPointSkill > 0)
+        {
+            LoadPanelUpgradeSkill(charater.champion);
+        }
+        else
+        {
+            StartCoroutine(ShowPanelUpgradeSkill(false));
+        }
+    }
+
+    public void UpdateNodeSkill()
+    {
+        for (int i = 0; i < charater.champion.levelSkillQ; i++)
+        {
+            listNodeQ.GetChild(i).GetChild(0).gameObject.SetActive(true);
+        }
+        for (int i = 0; i < charater.champion.levelSkillW; i++)
+        {
+            listNodeW.GetChild(i).GetChild(0).gameObject.SetActive(true);
+        }
+        for (int i = 0; i < charater.champion.levelSkillE; i++)
+        {
+            listNodeE.GetChild(i).GetChild(0).gameObject.SetActive(true);
+        }
+        for (int i = 0; i < charater.champion.levelSkillR; i++)
+        {
+            listNodeR.GetChild(i).GetChild(0).gameObject.SetActive(true);
+        }
     }
 }

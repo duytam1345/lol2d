@@ -9,7 +9,7 @@ public class UIFollowTarget : MonoBehaviour
     [SerializeField]
     float offsetY;
 
-    private void Update()
+    private void FixedUpdate()
     {
         Vector2 p = Camera.main.WorldToScreenPoint(gTarget.transform.position);
         p.y += offsetY;

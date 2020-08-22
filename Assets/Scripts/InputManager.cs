@@ -63,6 +63,22 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public static bool m_KeyDownD
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.D);
+        }
+    }
+
+    public static bool m_KeyDownF
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.F);
+        }
+    }
+
     public static bool m_KeyDownP
     {
         get

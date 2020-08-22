@@ -28,6 +28,7 @@ public class Fountain : MonoBehaviour
                 {
                     float amount = (item.GetComponent<Champion>().propertyChampion.healthPoint_Real)/100*2.1f;
                     item.GetComponent<Champion>().TakeHealth(amount);
+                    item.GetComponent<Champion>().TakeMana(amount);
                 }
             }
         }

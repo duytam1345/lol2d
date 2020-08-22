@@ -13,11 +13,12 @@ public class Creep : MonoBehaviour
         Super
     }
 
-    enum State
+    public enum State
     {
         Idle,
         Move,
         Attack,
+        Stun,
         EndGame
     }
 
@@ -33,8 +34,7 @@ public class Creep : MonoBehaviour
     [SerializeField]
     Type type;
 
-    [SerializeField]
-    State state;
+    public State state;
 
     public Dir direction;
 
@@ -45,8 +45,7 @@ public class Creep : MonoBehaviour
 
     public Property property;
 
-    [SerializeField]
-    int currentHealth;
+    public int currentHealth;
 
     [SerializeField]
     float timeAttackSecond;
@@ -81,10 +80,7 @@ public class Creep : MonoBehaviour
 
     void Update()
     {
-        if (timeAttackSecond > 0)
-        {
-            timeAttackSecond -= Time.deltaTime;
-        }
+        property.UpdateValue();
         switch (state)
         {
             case State.Idle:
@@ -100,8 +96,15 @@ public class Creep : MonoBehaviour
             case State.Attack:
                 anim.SetBool("Move", false);
                 Attack();
+                if (timeAttackSecond > 0)
+                {
+                    timeAttackSecond -= Time.deltaTime;
+                }
                 break;
             case State.EndGame:
+                break;
+            case State.Stun:
+                rb.velocity = Vector2.zero;
                 break;
         }
         if (!targetBase)
@@ -126,7 +129,7 @@ public class Creep : MonoBehaviour
         if (targetPos != Vector2.zero)
         {
             Vector2 dir = targetPos - (Vector2)transform.position;
-            rb.velocity = dir.normalized * property.moveSpeed;
+            rb.velocity = dir.normalized * property.moveSpeedCurrent;
         }
         else
         {
@@ -321,6 +324,11 @@ public class Creep : MonoBehaviour
     {
         if (curTarget)
         {
+            if (curTarget.GetComponent<Champion>() && curTarget.GetComponent<Champion>().state == Champion.State.Death)
+            {
+                curTarget = null;
+                return;
+            }
             if (curTarget.transform.position.x < transform.position.x)
             {
                 anim.GetComponent<SpriteRenderer>().flipX = true;
@@ -343,7 +351,6 @@ public class Creep : MonoBehaviour
                     g.GetComponent<ArrowOfMinion>().g = gameObject;
                     g.GetComponent<ArrowOfMinion>().target = curTarget;
                     g.GetComponent<ArrowOfMinion>().damage = damage;
-
                 }
             }
             else
@@ -367,9 +374,9 @@ public class Creep : MonoBehaviour
 
         foreach (var item in collider2D)
         {
-            if (item.tag == "Player")
+            if (item.GetComponent<Champion>() && item.GetComponent<Champion>().state != Champion.State.Death)
             {
-                if (team != item.GetComponent<Charater>().champion.team)
+                if (item.GetComponent<Champion>().propertyChampion.healthPointSecond > 0 && team != item.GetComponent<Champion>().team)
                 {
                     if (Vector2.Distance(transform.position, item.transform.position) < distance)
                     {
@@ -378,26 +385,28 @@ public class Creep : MonoBehaviour
                     }
                 }
             }
-            else if (item.tag == "Minion")
+            else if (item.GetComponent<Creep>() && team != item.GetComponent<Creep>().team)
             {
-                if (team != item.GetComponent<Creep>().team)
+                if (Vector2.Distance(transform.position, item.transform.position) < distance)
                 {
-                    if (Vector2.Distance(transform.position, item.transform.position) < distance)
-                    {
-                        distance = Vector2.Distance(transform.position, item.transform.position);
-                        gTarget = item.gameObject;
-                    }
+                    distance = Vector2.Distance(transform.position, item.transform.position);
+                    gTarget = item.gameObject;
                 }
             }
-            else if (item.tag == "Turret")
+            else if (item.GetComponent<Turret>() && item.GetComponent<Turret>().team != team)
             {
-                if (item.GetComponent<Turret>().team != team)
+                if (Vector2.Distance(transform.position, item.transform.position) < distance)
                 {
-                    if (Vector2.Distance(transform.position, item.transform.position) < distance)
-                    {
-                        distance = Vector2.Distance(transform.position, item.transform.position);
-                        gTarget = item.gameObject;
-                    }
+                    distance = Vector2.Distance(transform.position, item.transform.position);
+                    gTarget = item.gameObject;
+                }
+            }
+            else if (item.GetComponent<H28GOfHeimerdinger>() && item.GetComponent<H28GOfHeimerdinger>().team != team)
+            {
+                if (Vector2.Distance(transform.position, item.transform.position) < distance)
+                {
+                    distance = Vector2.Distance(transform.position, item.transform.position);
+                    gTarget = item.gameObject;
                 }
             }
         }
@@ -412,6 +421,8 @@ public class Creep : MonoBehaviour
 
     public void TakeDamage(GameObject g, int dmg)
     {
+        UIManager.instace.MakeTextDamage(transform.position, dmg.ToString());
+
         if (state == State.Move && g && Vector2.Distance(transform.position, g.transform.position) <= property.rangeToAttack)
         {
             curTarget = g;
@@ -425,13 +436,13 @@ public class Creep : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            if (g.GetComponent<Charater>())
+            if (g.tag == "FromChampion")
             {
                 Vector2 p = new Vector2(transform.position.x, transform.position.y + 2);
                 int money = CongThuc.MoneyOfCreep(type);
 
                 UIManager.instace.MakeTextMoney(p, money.ToString());
-                g.GetComponentInChildren<Champion>().propertyChampion.money += money;
+                FindObjectOfType<Champion>().propertyChampion.money += money;
             }
             Death();
         }
@@ -442,7 +453,7 @@ public class Creep : MonoBehaviour
         Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, 7);
         foreach (var item in collider2Ds)
         {
-            if (item.GetComponent<Charater>())
+            if (item.GetComponent<Charater>() && item.GetComponent<Charater>().champion.team != team)
             {
                 item.GetComponentInChildren<Champion>().TakeExp(CongThuc.ExpOfCreep(type));
             }

@@ -74,7 +74,7 @@ public class Mananger : MonoBehaviour
     }
     private void Start()
     {
-        Cursor.SetCursor(m1, Vector2.zero,CursorMode.ForceSoftware);
+        //Cursor.SetCursor(m1, Vector2.zero,CursorMode.ForceSoftware);
 
         Minion.OnFindEnemy += OnMinionFindEnemy;
         SpawMinion();
@@ -189,13 +189,13 @@ public class Mananger : MonoBehaviour
 
     public void SetCursor(int i)
     {
-        if (i == 0)
-        {
-            Cursor.SetCursor(m1, Vector2.zero, CursorMode.ForceSoftware);
-        }
-        else if (i == 1)
-        {
-            Cursor.SetCursor(m2, Vector2.zero, CursorMode.ForceSoftware);
-        }
+        //if (i == 0)
+        //{
+        //    Cursor.SetCursor(m1, Vector2.zero, CursorMode.ForceSoftware);
+        //}
+        //else if (i == 1)
+        //{
+        //    Cursor.SetCursor(m2, Vector2.zero, CursorMode.ForceSoftware);
+        //}
     }
 }

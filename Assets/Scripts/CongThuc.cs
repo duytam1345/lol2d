@@ -14,7 +14,11 @@ public class CongThuc : MonoBehaviour
 
     public static int ExpNextLevel(int level)
     {
-        return exp[level - 1];
+        if (level < 18)
+        {
+            return exp[level - 1];
+        }
+        return 0;
     }
 
     public static int ExpOfCreep(Creep.Type typeCreep)
@@ -47,5 +51,21 @@ public class CongThuc : MonoBehaviour
                 return 40;
         }
         return 0;
+    }
+
+    public static float TimeToReSpawn(Champion champion)
+    {
+        return (6 - champion.propertyChampion.level);
+    }
+
+    public static int Heal(Champion champion)
+    {
+        return (75 + champion.propertyChampion.level * 15);
+    }
+
+    public static float Ghost(Champion champion)
+    {
+        float percent = 22.588f + 1.412f * champion.propertyChampion.level;
+        return champion.propertyChampion.moveSpeed_Real / 100 * percent;
     }
 }
