@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SkillEHeimerdinger : MonoBehaviour
 {
+    public Champion c;
     public Team team;
 
     public int intLeft;
@@ -11,6 +12,7 @@ public class SkillEHeimerdinger : MonoBehaviour
     public Vector3 target;
     public float damage;
     public float speed;
+    public bool isUpgrade;
     Vector3 dir;
 
     private void Start()
@@ -33,14 +35,23 @@ public class SkillEHeimerdinger : MonoBehaviour
 
     void Explode()
     {
-        CircleCollider2D circleCollider2D = GetComponent<CircleCollider2D>();
+        float dmg = 0;
+        if (isUpgrade)
+        {
+            dmg = 100 * c.levelSkillR + damage / 100 * 60;
+        }
+        else
+        {
+            dmg = 20 + 40 * c.levelSkillE + damage / 100 * 60;
+        }
 
+        CircleCollider2D circleCollider2D = GetComponent<CircleCollider2D>();
         Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(circleCollider2D.transform.position, circleCollider2D.radius);
         foreach (var item in collider2Ds)
         {
             if (item.GetComponent<Creep>() && item.GetComponent<Creep>().team != team)
-            {
-                item.GetComponent<Creep>().TakeDamage(gameObject, (int)damage);
+            {   
+                item.GetComponent<Creep>().TakeDamage(c.gameObject, (int)dmg);
                 item.gameObject.AddComponent<StunCC>();
                 item.gameObject.GetComponent<StunCC>().team = team;
                 item.gameObject.GetComponent<StunCC>().timeLeft = 1.5f;

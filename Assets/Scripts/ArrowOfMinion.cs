@@ -48,7 +48,7 @@ public class ArrowOfMinion : MonoBehaviour
                         (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
                         (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
 
-                    UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
+                    UIManager.instance.MakeTextDamage(rectPos, damage.ToString());
                     Destroy(gameObject);
                 }
                 else if (target.GetComponent<Turret>())
@@ -60,7 +60,7 @@ public class ArrowOfMinion : MonoBehaviour
                         (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
                         (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
 
-                    UIManager.instace.MakeTextDamage(rectPos, damage.ToString());
+                    UIManager.instance.MakeTextDamage(rectPos, damage.ToString());
                     Destroy(gameObject);
                 }
                 else if (target.GetComponent<H28GOfHeimerdinger>())

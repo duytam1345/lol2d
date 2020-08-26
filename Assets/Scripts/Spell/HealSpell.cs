@@ -11,7 +11,7 @@ public class HealSpell : Spell
             Instantiate(effect, transform.position, Quaternion.identity, champion.transform);
 
             GameObject icon = Instantiate(iconEffect);
-            UIManager.instace.CreateSlotEffect("Heal Spell", icon.GetComponent<IconEffect>());
+            UIManager.instance.CreateSlotEffect("Heal Spell", icon.GetComponent<IconEffect>());
 
             champion.TakeHealth(CongThuc.Heal(champion));
             SoundBase.Sound.Heal();

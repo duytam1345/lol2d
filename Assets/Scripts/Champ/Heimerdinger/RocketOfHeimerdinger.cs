@@ -6,17 +6,17 @@ public class RocketOfHeimerdinger : MonoBehaviour
 {
     public Team team;
 
+    public Champion c;
+
     public Vector2 dir;
-    public float dmg;
     public float speed;
+
+    public bool isUpgrade;
 
     Vector2 startPos;
 
     private void Start()
     {
-        Vector3 p = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-        dir = p - transform.position;
-
         startPos = transform.position;
 
         Vector3 direction = transform.position + (Vector3)dir - transform.position;
@@ -36,7 +36,17 @@ public class RocketOfHeimerdinger : MonoBehaviour
         {
             if (item.GetComponent<Creep>() && item.GetComponent<Creep>().team != team)
             {
-                item.GetComponent<Creep>().TakeDamage(gameObject, 50);
+                float dmg = 0;
+                if (isUpgrade)
+                {
+                    dmg = 90 + 35 * c.levelSkillR + c.propertyChampion.magicDamage_Real / 100 * 45;
+                }
+                else
+                {
+                    dmg = 20 + 30 * c.levelSkillW + c.propertyChampion.magicDamage_Real / 100 * 45;
+                }
+
+                item.GetComponent<Creep>().TakeDamage(c.gameObject, (int)dmg);
                 Destroy(gameObject);
                 return;
             }

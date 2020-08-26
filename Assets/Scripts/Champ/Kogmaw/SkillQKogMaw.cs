@@ -5,7 +5,7 @@ using UnityEngine;
 public class SkillQKogMaw : MonoBehaviour
 {
     public Team team;
-
+    public Champion c;
     public Vector2 dir;
     public float dmg;
     public float speed;
@@ -36,7 +36,7 @@ public class SkillQKogMaw : MonoBehaviour
         {
             if (item.GetComponent<Creep>() && item.GetComponent<Creep>().team != team)
             {
-                item.GetComponent<Creep>().TakeDamage(gameObject, (int)dmg);
+                item.GetComponent<Creep>().TakeDamage(c.gameObject, (int)dmg);
                 Destroy(gameObject);
                 return;
             }

@@ -27,24 +27,67 @@ public class KogMawChampion : Champion
     public int costR;
     public GameObject prefabSkillR;
 
+    public override void Move()
+    {
+        base.Move();
+        if (rb2d.velocity.x != 0)
+        {
+            anim.SetFloat("VelocityX", rb2d.velocity.normalized.x);
+        }
+        if (rb2d.velocity.y != 0)
+        {
+            anim.SetFloat("VelocityY", rb2d.velocity.normalized.y);
+        }
+    }
+
     public override void Start()
     {
         base.Start();
-        propertyChampion.attackSpeedExtra.Add("Passive", 0);
+        propertyChampion.attackSpeedExtra.Add("PassiveQ", 0);
         LevelUp();
     }
 
     public override void Attack()
     {
+        int r = Random.Range(0, 3);
+        if (r == 0)
+        {
+            GameObject g = Instantiate(Resources.Load("Kog'Maw/Kog'Maw Move") as GameObject);
+        }
+
         GameObject a = Instantiate(objectAttack, transform.position, Quaternion.identity);
         a.GetComponent<KogMawAA>().baseChamp = this;
         a.GetComponent<KogMawAA>().target = targetAttack;
         a.GetComponent<KogMawAA>().damage = propertyChampion.physicsDamage_Real;
+        a.GetComponent<KogMawAA>().critRate = propertyChampion.critRate_Real;
+        a.GetComponent<KogMawAA>().lifeSteel = propertyChampion.lifeSteel_Real;
         a.GetComponent<KogMawAA>().onW = onW;
     }
 
     private void Update()
     {
+        //set ainm
+        if (anim.GetFloat("VelocityX") < 0)
+        {
+            anim.GetComponent<SpriteRenderer>().flipX = false;
+            anim.transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else if (anim.GetFloat("VelocityX") > 0)
+        {
+            anim.GetComponent<SpriteRenderer>().flipX = true;
+            anim.transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = true;
+        }
+
+        if (state == State.Walk || state == State.WalkToAttack)
+        {
+            anim.SetBool("Move", true);
+        }
+        else
+        {
+            anim.SetBool("Move", false);
+        }
+        //
+
         if (Input.GetKeyDown(KeyCode.U))
         {
             LevelUp();
@@ -64,10 +107,10 @@ public class KogMawChampion : Champion
         if (isDeath)
         {
             timeLeftToRespawn -= Time.deltaTime;
-            UIManager.instace.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = ((int)timeLeftToRespawn).ToString();
+            UIManager.instance.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = ((int)timeLeftToRespawn).ToString();
             if (timeLeftToRespawn <= 0)
             {
-                UIManager.instace.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = "";
+                UIManager.instance.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = "";
                 SpawnAtFountain();
             }
         }
@@ -119,22 +162,34 @@ public class KogMawChampion : Champion
 
     public override void SetSkill()
     {
+        //Q
         int a = 0;
         if (levelSkillQ > 0)
         {
             a = 10 + (levelSkillQ * 5);
         }
 
-        propertyChampion.attackSpeedExtra[""] = a;
+        propertyChampion.attackSpeedExtra["PassiveQ"] = a;
         propertyChampion.UpdateValue();
+        //
+
+        //E
+        costE = 70 + 10 * levelSkillE;
+        costSkillE = costE + " năng lượng";
+        //
+
+        //R
+        timeCoolDownSkillR = 2.5f - .5f * levelSkillR;
+        //
     }
 
     public override void SkillQ()
     {
-        if (timeCoolDownSkillQSecond <= 0 && propertyChampion.manaPointSecond >= costW && levelSkillQ>0)
+        if (timeCoolDownSkillQSecond <= 0 && propertyChampion.manaPointSecond >= costW && levelSkillQ > 0)
         {
             GameObject g = Instantiate(prefabSkillQ, transform.position, Quaternion.identity);
-            g.GetComponent<SkillQKogMaw>().dmg = 90 + propertyChampion.magicDamage_Real / 100 * 70;
+            g.GetComponent<SkillQKogMaw>().dmg = (40 + (50 * levelSkillQ)) + propertyChampion.magicDamage_Real / 100 * 70;
+            g.GetComponent<SkillQKogMaw>().c = this;
             g.GetComponent<SkillQKogMaw>().team = team;
 
             propertyChampion.manaPointSecond -= costQ;
@@ -147,7 +202,7 @@ public class KogMawChampion : Champion
         if (timeCoolDownSkillWSecond <= 0 && propertyChampion.manaPointSecond >= costW && levelSkillW > 0)
         {
             GameObject icon = Instantiate(iconEffectW);
-            UIManager.instace.CreateSlotEffect("Skill W KogMaw", icon.GetComponent<IconEffect>());
+            UIManager.instance.CreateSlotEffect("Skill W KogMaw", icon.GetComponent<IconEffect>());
 
             timeEffectW = 8;
             onW = true;
@@ -165,7 +220,7 @@ public class KogMawChampion : Champion
         if (timeCoolDownSkillESecond <= 0 && propertyChampion.manaPointSecond >= costE && levelSkillE > 0)
         {
             GameObject g = Instantiate(prefabSkillE, transform.position, Quaternion.identity);
-            g.GetComponent<SkillEKogMaw>().baseGo = gameObject;
+            g.GetComponent<SkillEKogMaw>().baseChamp = this;
             g.GetComponent<SkillEKogMaw>().magicDamage = propertyChampion.magicDamage_Real;
             g.GetComponent<SkillEKogMaw>().team = team;
 
@@ -185,6 +240,7 @@ public class KogMawChampion : Champion
         {
             Vector2 v = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
             GameObject g = Instantiate(prefabSkillR, v, Quaternion.identity);
+            g.GetComponent<SkillRKogMaw>().c = this;
             g.GetComponent<SkillRKogMaw>().physicsDamage = propertyChampion.physicsDamage_Real;
             g.GetComponent<SkillRKogMaw>().magicDamage = propertyChampion.magicDamage_Real;
 
@@ -195,12 +251,14 @@ public class KogMawChampion : Champion
 
     public override void Death()
     {
-        UIManager.instace.imageAvatar.color = new Color(.3f, .3f, .3f, 1);
-        UIManager.instace.barTopHealth.SetActive(false);
-        canAttack = false;
-        state = State.Death;
-        timePassive = 4;
-        isPassive = true;
+        death++;
+        //UIManager.instace.imageAvatar.color = new Color(.3f, .3f, .3f, 1);
+        //UIManager.instace.barTopHealth.SetActive(false);
+        //canAttack = false;
+        //state = State.Death;
+        //timePassive = 4;
+        //isPassive = true;
+        ExplodeDeath();
     }
 
     public void ExplodeDeath()
@@ -214,6 +272,7 @@ public class KogMawChampion : Champion
             }
         }
 
+        state = State.Death;
         rb2d.velocity = Vector2.zero;
         canMove = false;
         isPassive = false;

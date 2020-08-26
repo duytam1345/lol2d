@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BulletOfHeimerdinger : MonoBehaviour
 {
+    public Champion c;
     public GameObject target;
     public float speed;
     public float dmg;
@@ -33,7 +34,7 @@ public class BulletOfHeimerdinger : MonoBehaviour
         {
             if (target.GetComponent<Creep>())
             {
-                target.GetComponent<Creep>().TakeDamage(gameObject, (int)dmg);
+                target.GetComponent<Creep>().TakeDamage(c.gameObject, (int)dmg);
             }
         }
 

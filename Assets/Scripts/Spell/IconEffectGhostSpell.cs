@@ -13,7 +13,7 @@ public class IconEffectGhostSpell : IconEffect
             FindObjectOfType<Charater>().champion.propertyChampion.moveSpeedExtra.Remove("Ghost");
             FindObjectOfType<Charater>().champion.propertyChampion.UpdateValue();
 
-            Destroy(UIManager.instace.listEffect["Ghost Spell"].gameObject);
+            Destroy(UIManager.instance.listEffect["Ghost Spell"].gameObject);
             Destroy(gameObject);
         }
     }

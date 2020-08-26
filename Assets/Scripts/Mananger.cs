@@ -9,6 +9,8 @@ public enum Team
 }
 public class Mananger : MonoBehaviour
 {
+    public static Mananger mananger;
+
     [SerializeField]
     GameObject effectRightClick;
     //[ConditionalField("WanderAround")] public float WanderDistance = 5;
@@ -61,6 +63,11 @@ public class Mananger : MonoBehaviour
     public GameObject fountainRed;
     public GameObject fountainBlue;
 
+    public List<Champion> championInGame;
+
+    public float timeMinute;
+    public float timeSecond;
+
     private void Awake()
     {
         if (!instance)
@@ -71,6 +78,51 @@ public class Mananger : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+
+        string n = "";
+
+        if (MangerPickChamp.mangerPickChamp)
+        {
+            n = MangerPickChamp.mangerPickChamp.nameChampionPick;
+        }
+
+        if (string.IsNullOrEmpty(n))
+        {
+            n = "Kog'Maw";
+            print("Null Select Champ!.");
+        }
+        if (Resources.Load(n))
+        {
+            Charater c = FindObjectOfType<Charater>();
+            GameObject g = Resources.Load(n) as GameObject;
+            c.gameObject.AddComponent(g.GetComponent<Champion>().GetType());
+
+            string nameComponent = "";
+
+            if (n == "Kog'Maw")
+            {
+                nameComponent = "KogMawChampion";
+            }
+            else if (n == "Dr. Mundo")
+            {
+                nameComponent = "MundoChampion";
+            }
+            else if (n == "Heimerdinger")
+            {
+                nameComponent = "HeimerdingerChampion";
+            }
+
+            UnityEditorInternal.ComponentUtility.CopyComponent(g.GetComponent(nameComponent));
+            UnityEditorInternal.ComponentUtility.PasteComponentValues(c.GetComponent<Champion>());
+
+            championInGame.Add(c.GetComponent<Champion>());
+        }
+
+
+        championInGame.Add(GameObject.Find("Bot").GetComponent<Champion>());
+
+        SpawnTurret();
     }
     private void Start()
     {
@@ -78,12 +130,21 @@ public class Mananger : MonoBehaviour
 
         Minion.OnFindEnemy += OnMinionFindEnemy;
         SpawMinion();
-        SpawnTurret();
     }
 
     private void Update()
     {
         CalTime();
+
+        timeMinute = Time.time / 60;
+        timeSecond = Time.time % 60;
+
+        SetTextTimeGame();
+    }
+
+    void SetTextTimeGame()
+    {
+        UIManager.instance.textTimeGame.text = Mathf.RoundToInt(timeMinute) + ":" + Mathf.RoundToInt(timeSecond);
     }
 
     void SpawnTurret()
@@ -94,6 +155,7 @@ public class Mananger : MonoBehaviour
             ///
             //Turret
             GameObject tB = Instantiate(prefabTurret, pointTurretBlue[i].transform.position, Quaternion.identity);
+            tB.name = "Turret Blue " + (i + 1);
 
             //UI
             GameObject uB = Instantiate(uiTurretBlue, GameObject.Find("UI Turret").transform);
@@ -106,6 +168,7 @@ public class Mananger : MonoBehaviour
             ///
             //Turret
             GameObject tR = Instantiate(prefabTurret, pointTurretRed[i].transform.position, Quaternion.identity);
+            tR.name = "Turret Red " + (i + 1);
 
             //UI
             GameObject uR = Instantiate(uiTurretRed, GameObject.Find("UI Turret").transform);

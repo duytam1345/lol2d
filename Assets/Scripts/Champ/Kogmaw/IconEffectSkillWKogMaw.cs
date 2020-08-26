@@ -10,10 +10,10 @@ public class IconEffectSkillWKogMaw : IconEffect
 
         if (timeCooldownSecond <= 0)
         {
-            FindObjectOfType<Charater>().champion.propertyChampion.attackRangeExtra.Remove("Skill W");
+            FindObjectOfType<Charater>().champion.propertyChampion.attackRangeExtra.Remove("Skill W KogMaw");
 
-            Destroy(UIManager.instace.listEffect["Skill W KogMaw"].gameObject);
-            Destroy(gameObject);
+            Destroy(UIManager.instance.listEffect["Skill W KogMaw"].gameObject);
+            UIManager.instance.listEffect.Remove("Skill W KogMaw");
         }
     }
 }

@@ -1,0 +1,698 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1115071309525115878
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1115071309525115881}
+  - component: {fileID: 1115071309525115883}
+  - component: {fileID: 1115071309525115880}
+  - component: {fileID: 1115071309525115882}
+  m_Layer: 0
+  m_Name: Circle W
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1115071309525115881
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309525115878}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1115071310418306956}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1115071309525115883
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309525115878}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 10
+  m_Sprite: {fileID: -9077335683623999901, guid: b118a8ab293d1dd4fbd81b11397b7f18,
+    type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1.0833334, y: 1.375}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!58 &1115071309525115880
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309525115878}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 2
+--- !u!95 &1115071309525115882
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309525115878}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 071eb2af192997748b16bfb6ea4d4c2f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &1115071309580915218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1115071309580915221}
+  - component: {fileID: 1115071309580915220}
+  - component: {fileID: 1115071309580915223}
+  m_Layer: 0
+  m_Name: New Sprite
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1115071309580915221
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309580915218}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1115071310418306956}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1115071309580915220
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309580915218}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 5
+  m_Sprite: {fileID: 21300000, guid: cc5e0a511ce83f14885ac2e89e72cb68, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.04, y: 0.04}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!95 &1115071309580915223
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071309580915218}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &1115071310022246339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1115071310022246338}
+  m_Layer: 0
+  m_Name: Circle Range
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1115071310022246338
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310022246339}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1115071310418306956}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1115071310220932496
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1115071310220932498}
+  - component: {fileID: 1115071310220932499}
+  m_Layer: 0
+  m_Name: Code Mundo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1115071310220932498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310220932496}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1115071310418306956}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1115071310220932499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310220932496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee0854a792fb5da448dd02293a7841ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  propertyChampion:
+    exp: 130
+    level: 1
+    money: 50000
+    healthEachLv: 89
+    healthRegenEachLv: 0.75
+    manaEachLv: 0
+    manaRegenEachLv: 0
+    attackDamageEachLv: 3.5
+    attackSpeedEachLv: 2.8
+    bonusAttackAtLv1: 15
+    arrmorEachLv: 3.5
+    magicResistanceEachLv: 1.25
+    attackRange: 5
+    attackRange_Real: 0
+    attackSpeed: 0.625
+    attackSpeed_Real: 0
+    healthPoint: 582
+    healthPointSecond: 400
+    healthPoint_Real: 582
+    healthRegen: 8
+    healthRegen_Real: 0
+    manaPoint: 0
+    manaPointSecond: 0
+    manaPoint_Real: 0
+    manaRegen: 0
+    manaRegen_Real: 0
+    moveSpeed: 5
+    moveSpeed_Real: 0
+    physicsDamage: 61
+    physicsDamage_Real: 61
+    magicDamage: 0
+    magicDamage_Real: 0
+    lifeSteel: 0
+    lifeSteel_Real: 0
+    spellVamp: 0
+    spellVamp_Real: 0
+    arrmor: 36
+    arrmor_Real: 0
+    magicResistance: 32
+    magicResistance_Real: 0
+    cooldown: 0
+    cooldown_Real: 0
+    critRate: 0
+    critRate_Real: 0
+  team: 1
+  nameChampion: 
+  spriteAvatar: {fileID: 0}
+  spritePassive: {fileID: 0}
+  spriteQ: {fileID: 0}
+  spriteW: {fileID: 0}
+  spriteE: {fileID: 0}
+  spriteR: {fileID: 0}
+  timeCoolDownSkillQ: 4
+  timeCoolDownSkillQSecond: 0
+  timeCoolDownSkillW: 4
+  timeCoolDownSkillWSecond: 0
+  timeCoolDownSkillE: 12
+  timeCoolDownSkillESecond: 0
+  timeCoolDownSkillR: 110
+  timeCoolDownSkillRSecond: 0
+  leftPointSkill: 0
+  levelSkillQ: 0
+  levelSkillW: 0
+  levelSkillE: 0
+  levelSkillR: 0
+  namePassive: 
+  infoPassive: 
+  nameSkillQ: 
+  infoSkillQ: 
+  costSkillQ: 
+  typeSkillQ: 0
+  nameSkillW: 
+  infoSkillW: 
+  costSkillW: 
+  typeSkillW: 0
+  nameSkillE: 
+  infoSkillE: 
+  costSkillE: 
+  typeSkillE: 0
+  nameSkillR: 
+  infoSkillR: 
+  costSkillR: 
+  typeSkillR: 0
+  textLevel: {fileID: 0}
+  item1: {fileID: 0}
+  item2: {fileID: 0}
+  item3: {fileID: 0}
+  item4: {fileID: 0}
+  item5: {fileID: 0}
+  item6: {fileID: 0}
+  spellD: {fileID: 0}
+  spellF: {fileID: 0}
+  ItemWard: {fileID: 0}
+  tuiDo:
+    ItemSelected: {fileID: 0}
+    item:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+  rend: {fileID: 0}
+  recalling: 0
+  timeRecall: 0
+  prefabEffect: {fileID: 0}
+  timePerSecond: 0
+  timePerHalfSecond: 0
+  canMove: 1
+  canAttack: 1
+  anim: {fileID: 0}
+  isDeath: 0
+  timeLeftToRespawn: 0
+  targetAttack: {fileID: 0}
+  attackSpeedSecond: 0
+  prefabHit: {fileID: 0}
+  attacking: 0
+  targetPos: {x: 0, y: 0}
+  rb2d: {fileID: 0}
+  isRangeChamp: 0
+  percentHealth: 0.3
+  costQ: 50
+  prefabSkillQ: {fileID: 2816332042556924130, guid: a2ffa8c6dd82bdc4db94a4b4e436a168,
+    type: 3}
+  costW: 10
+  effectSkillW: {fileID: 1115071309525115878}
+  timeEffectW: 0
+  OnW: 0
+  costE: 25
+  amountDamageE: 50
+  timeEffectE: 5
+  timeEffectESecond: 5
+  OnE: 0
+  costR: 0
+  timeEffectR: 12
+  timeEffectRSecond: 0
+  OnR: 0
+--- !u!1 &1115071310418306957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1115071310418306956}
+  - component: {fileID: 1115071310418306959}
+  - component: {fileID: 1115071310418306958}
+  - component: {fileID: 1115071310418306961}
+  - component: {fileID: 1115071310418306963}
+  m_Layer: 0
+  m_Name: Heimerdinger
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1115071310418306956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310418306957}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -20.78, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1115071309580915221}
+  - {fileID: 1115071310022246338}
+  - {fileID: 1115071310220932498}
+  - {fileID: 1115071309525115881}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &1115071310418306959
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310418306957}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
+--- !u!61 &1115071310418306958
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310418306957}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!114 &1115071310418306961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310418306957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddb6404910789347ba0526024245de4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  champion: {fileID: 1115071310418306963}
+  uI: {fileID: 0}
+  currentHealth: 100
+  rb2d: {fileID: 1115071310418306959}
+  anim: {fileID: 1115071309580915223}
+  attacking: 0
+--- !u!114 &1115071310418306963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115071310418306957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257005893b0c9234da2db2048b97554a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  propertyChampion:
+    exp: 0
+    level: 1
+    money: 500
+    healthEachLv: 87
+    healthRegenEachLv: 0.55
+    manaEachLv: 20
+    manaRegenEachLv: 0
+    attackDamageEachLv: 2.7
+    attackSpeedEachLv: 1.36
+    bonusAttackAtLv1: 0
+    arrmorEachLv: 3
+    magicResistanceEachLv: 0.5
+    attackRange: 4
+    attackRange_Real: 0
+    attackSpeed: 0.625
+    attackSpeed_Real: 0
+    healthPoint: 488
+    healthPointSecond: 488
+    healthPoint_Real: 0
+    healthRegen: 7
+    healthRegen_Real: 0
+    manaPoint: 385
+    manaPointSecond: 385
+    manaPoint_Real: 0
+    manaRegen: 8
+    manaRegen_Real: 0
+    moveSpeed: 3
+    moveSpeed_Real: 0
+    physicsDamage: 56
+    physicsDamage_Real: 0
+    magicDamage: 0
+    magicDamage_Real: 0
+    lifeSteel: 0
+    lifeSteel_Real: 0
+    spellVamp: 0
+    spellVamp_Real: 0
+    arrmor: 19
+    arrmor_Real: 0
+    magicResistance: 30
+    magicResistance_Real: 0
+    cooldown: 0
+    cooldown_Real: 0
+    critRate: 0
+    critRate_Real: 0
+  team: 1
+  nameChampion: Heimerdinger
+  spriteAvatar: {fileID: 21300000, guid: c2b0242eb34b69a40974a41990f64c48, type: 3}
+  spritePassive: {fileID: 21300000, guid: f55a76f0b19a5b74fba0c9ae103f5ff0, type: 3}
+  spriteQ: {fileID: 21300000, guid: 9defa6b70b4fee34a8384bb160d92ef4, type: 3}
+  spriteW: {fileID: 21300000, guid: c82862e127655624d9430232cd6516b8, type: 3}
+  spriteE: {fileID: 21300000, guid: d7e7d9ffd5dbee943bee69dc85e73a45, type: 3}
+  spriteR: {fileID: 21300000, guid: 3e6eb43637a28a84f821f86a413d382e, type: 3}
+  timeCoolDownSkillQ: 1
+  timeCoolDownSkillQSecond: 0
+  timeCoolDownSkillW: 11
+  timeCoolDownSkillWSecond: 0
+  timeCoolDownSkillE: 18
+  timeCoolDownSkillESecond: 0
+  timeCoolDownSkillR: 100
+  timeCoolDownSkillRSecond: 0
+  leftPointSkill: 0
+  levelSkillQ: 0
+  levelSkillW: 0
+  levelSkillE: 0
+  levelSkillR: 0
+  namePassive: "C\u01A1 gi\u1EDBi s\u01B0 Hextech"
+  infoPassive: "Nh\u1EADn th\xEAm 20% t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n khi \u0111\u1EE9ng
+    g\u1EA7n tr\u1EE5"
+  nameSkillQ: "Th\xE1p ph\xE1o ti\u1EBFn h\xF3a H-28G"
+  infoSkillQ: "\u0110\u1EB7t m\u1ED9t th\xE1p ph\xE1o xu\u1ED1ng v\u1ECB tr\xED ch\u1EC9
+    \u0111\u1ECBnh"
+  costSkillQ: 20
+  typeSkillQ: 0
+  nameSkillW: "T\xEAn l\u1EEDa si\xEAu nh\u1ECF Hextech"
+  infoSkillW: "Ph\xF3ng ra m\u1ED9t lo\u1EA1t 5 t\xEAn l\u1EEDa h\u1ED9i t\u1EE5 v\u1EC1
+    ph\xEDa con tr\u1ECF v\xE0 bay qua n\xF3. T\xEAn l\u1EEDa g\xE2y s\xE1t th\u01B0\u01A1ng
+    ph\xE9p. C\xE1c c\xFA \u0111\xE1nh t\xEAn l\u1EEDa b\u1ED5 sung g\xE2y gi\u1EA3m
+    s\xE1t th\u01B0\u01A1ng."
+  costSkillW: 70
+  typeSkillW: 0
+  nameSkillE: "L\u1EF1u \u0111\u1EA1n b\xE3o \u0111i\u1EC7n t\u1EED ch-2"
+  infoSkillE: "N\xE9m m\u1ED9t qu\u1EA3 l\u1EF1u \u0111\u1EA1n g\xE2y s\xE1t th\u01B0\u01A1ng
+    ph\xE9p l\xEAn k\u1EBB \u0111\u1ECBch v\xE0 l\xE0m ch\u1EADm 35% T\u1ED1c \u0111\u1ED9
+    Di chuy\u1EC3n c\u1EE7a ch\xFAng trong 2 gi\xE2y. Nh\u1EEFng k\u1EBB \u0111\u1ECBch
+    \u1EDF gi\u1EEFa v\u1EE5 n\u1ED5 c\u0169ng b\u1ECB cho\xE1ng trong 1,5 gi\xE2y."
+  costSkillE: 85
+  typeSkillE: 0
+  nameSkillR: "N\xC2NG C\u1EA4P!!!"
+  infoSkillR: "L\xE0m cho k\u1EF9 n\u0103ng ti\u1EBFp theo c\u1EE7a Heimerdinger mi\u1EC5n
+    ph\xED v\xE0 cho n\xF3 th\xEAm hi\u1EC7u \u1EE9ng. K\xEDch ho\u1EA1t l\u1EA1i
+    \u0111\u1EC3 h\u1EE7y b\u1ECF."
+  costSkillR: 
+  typeSkillR: 2
+  textLevel: {fileID: 0}
+  item1: {fileID: 0}
+  item2: {fileID: 0}
+  item3: {fileID: 0}
+  item4: {fileID: 0}
+  item5: {fileID: 0}
+  item6: {fileID: 0}
+  spellD: {fileID: 2597140246658753999, guid: 72bc7520e3831f4469c90f5d62713851, type: 3}
+  spellF: {fileID: 382145906238124143, guid: 37d22b409f219ef48bfaf3825044c828, type: 3}
+  ItemWard: {fileID: 0}
+  tuiDo:
+    ItemSelected: {fileID: 0}
+    item:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+  rend: {fileID: 1115071309580915218}
+  recalling: 0
+  timeRecall: 0
+  prefabEffect: {fileID: 0}
+  timePerSecond: 0
+  timePerHalfSecond: 0
+  canMove: 1
+  canAttack: 1
+  anim: {fileID: 0}
+  isDeath: 0
+  timeLeftToRespawn: 0
+  targetAttack: {fileID: 0}
+  attackSpeedSecond: 0
+  prefabHit: {fileID: 0}
+  attacking: 0
+  targetPos: {x: 0, y: 0}
+  rb2d: {fileID: 1115071310418306959}
+  isRangeChamp: 1
+  objectAttack: {fileID: 498029812716128484, guid: 4e9ebfa087b09024884a28d76d92b8b5,
+    type: 3}
+  spriteUpgradeQ: {fileID: 21300000, guid: b8587281bf164244aba3421ac4edb946, type: 3}
+  turretQ: {fileID: 1685585924143077646, guid: 15eeb36b4e04eff44a9f2354de6ed042, type: 3}
+  costQ: 20
+  h28GOfHeimerdingers: []
+  timeCooldownKit: 11
+  leftKit: 3
+  iconEffectQ: {fileID: 5210048552576554540, guid: d4b4445e86af15f479bbeded367352be,
+    type: 3}
+  spriteUpgradeW: {fileID: 21300000, guid: a51d38ecd329a794aa266e0f61927e1d, type: 3}
+  prefabSkillW: {fileID: 1015390661384067290, guid: 8b94172b705d71d40a7fd461dfeb89ac,
+    type: 3}
+  costW: 50
+  spriteUpgradeE: {fileID: 21300000, guid: 85c7b409c37afc242a68ba098a6a2513, type: 3}
+  prefabE: {fileID: 1555234914464840798, guid: 2f7db252e3d3bd54d843d1bc6bc04428, type: 3}
+  costE: 85
+  iconEffectR: {fileID: 5210048552576554540, guid: 9c1d440f856fa774686e8613e7e5fd20,
+    type: 3}

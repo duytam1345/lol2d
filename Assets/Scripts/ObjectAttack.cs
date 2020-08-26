@@ -37,12 +37,12 @@ public class ObjectAttack : MonoBehaviour
     {
         if (target.GetComponent<Creep>())
         {
-            target.GetComponent<Creep>().TakeDamage(gameObject, (int)damage);
+            target.GetComponent<Creep>().TakeDamage(baseChamp.gameObject, (int)damage);
         }
         else if (target.GetComponent<Turret>())
         {
-            target.GetComponent<Turret>().TakeDamage(gameObject, (int)damage);
-            UIManager.instace.MakeTextDamage(target.transform.position, damage.ToString());
+            target.GetComponent<Turret>().TakeDamage(baseChamp.gameObject, (int)damage);
+            UIManager.instance.MakeTextDamage(target.transform.position, damage.ToString());
         }
 
         Vector2 pos = new Vector2(

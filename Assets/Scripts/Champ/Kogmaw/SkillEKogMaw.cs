@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SkillEKogMaw : MonoBehaviour
 {
-    public GameObject baseGo;
+    public Champion baseChamp;
     public Team team;
     public Transform child;
     public float magicDamage;
@@ -54,7 +54,7 @@ public class SkillEKogMaw : MonoBehaviour
         {
             if (transform.localScale.y < 5)
             {
-                collision.GetComponent<Creep>().TakeDamage(gameObject, (int)(75 + (magicDamage / 100 * 50)));
+                collision.GetComponent<Creep>().TakeDamage(baseChamp.gameObject, (int)((30+(45*baseChamp.levelSkillE)) + (magicDamage / 100 * 50)));
             }
         }
     }
@@ -75,7 +75,7 @@ public class SkillEKogMaw : MonoBehaviour
 
             if (!exsist)
             {
-                float valueSlow = collision.GetComponent<Creep>().property.moveSpeedCurrent / 100 * 20;
+                float valueSlow = collision.GetComponent<Creep>().property.moveSpeedCurrent / 100 * (12+(8*baseChamp.levelSkillE));
 
                 ValueExtra valueExtra = new ValueExtra();
                 valueExtra.timeLeft = .25f;

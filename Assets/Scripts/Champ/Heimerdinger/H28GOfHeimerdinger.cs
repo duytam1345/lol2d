@@ -7,6 +7,8 @@ public class H28GOfHeimerdinger : MonoBehaviour
 {
     public Team team;
 
+    public Champion c;
+
     public GameObject bullet;
     public GameObject bulletSecond;
 
@@ -120,6 +122,7 @@ public class H28GOfHeimerdinger : MonoBehaviour
                 if (manaSecond < mana)
                 {
                     GameObject a = Instantiate(bullet, transform.position, Quaternion.identity);
+                    a.GetComponent<BulletOfHeimerdinger>().c = c;
                     a.GetComponent<BulletOfHeimerdinger>().dmg =
                         (!isUpgrade ? 6 + damage / 100 * 30 : 80 + damage / 100 * 45);
                     a.GetComponent<BulletOfHeimerdinger>().target = targetAttack;
@@ -135,6 +138,8 @@ public class H28GOfHeimerdinger : MonoBehaviour
                 else
                 {
                     GameObject a = Instantiate(bulletSecond, transform.position, Quaternion.identity);
+                    a.GetComponent<BulletOfHeimerdingerBeam>().c = c;
+                    a.GetComponent<BulletOfHeimerdingerBeam>().team = team;
                     a.GetComponent<BulletOfHeimerdingerBeam>().damage =
                         (!isUpgrade ? 40 + damage / 100 * 55 : 100 + damage / 100 * 70);
                     a.GetComponent<BulletOfHeimerdingerBeam>().dir = (targetAttack.transform.position - transform.position);
@@ -165,7 +170,7 @@ public class H28GOfHeimerdinger : MonoBehaviour
     public void TakeDamage(GameObject g, int dmg)
     {
         healthSecond -= dmg;
-        UIManager.instace.MakeTextDamage(transform.position, dmg.ToString());
+        UIManager.instance.MakeTextDamage(transform.position, dmg.ToString());
 
         if (healthSecond <= 0)
         {

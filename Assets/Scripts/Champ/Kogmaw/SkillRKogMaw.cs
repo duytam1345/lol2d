@@ -5,6 +5,7 @@ using UnityEngine;
 public class SkillRKogMaw : MonoBehaviour
 {
     public Team team;
+    public Champion c;
     public float physicsDamage;
     public float magicDamage;
     public GameObject sprite;
@@ -57,7 +58,7 @@ public class SkillRKogMaw : MonoBehaviour
                         magicDamage / 100 * (35 + (35 / 100 * increamentPercent));
                 }
 
-                item.GetComponent<Creep>().TakeDamage(gameObject, (int)damage);
+                item.GetComponent<Creep>().TakeDamage(c.gameObject, (int)damage);
             }
         }
 

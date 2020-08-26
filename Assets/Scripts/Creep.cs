@@ -419,16 +419,17 @@ public class Creep : MonoBehaviour
         }
     }
 
-    public void TakeDamage(GameObject g, int dmg)
+    public int TakeDamage(GameObject g, int dmg)
     {
-        UIManager.instace.MakeTextDamage(transform.position, dmg.ToString());
+        float damg = CongThuc.LayDamage(dmg, property.arrmor_Real);
+        UIManager.instance.MakeTextDamage(transform.position, damg.ToString());
 
         if (state == State.Move && g && Vector2.Distance(transform.position, g.transform.position) <= property.rangeToAttack)
         {
             curTarget = g;
         }
 
-        currentHealth -= dmg;
+        currentHealth -= (int)damg;
         if (ui)
         {
             ui.transform.GetChild(2).GetComponent<Image>().fillAmount = (float)currentHealth / (float)property.healthPoint;
@@ -436,16 +437,22 @@ public class Creep : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            if (g.tag == "FromChampion")
+            if (g.GetComponent<Charater>())
             {
                 Vector2 p = new Vector2(transform.position.x, transform.position.y + 2);
                 int money = CongThuc.MoneyOfCreep(type);
 
-                UIManager.instace.MakeTextMoney(p, money.ToString());
+                UIManager.instance.MakeTextMoney(p, money.ToString());
                 FindObjectOfType<Champion>().propertyChampion.money += money;
+            }
+            if (g.GetComponent<Champion>())
+            {
+                g.GetComponent<Champion>().cr++;
             }
             Death();
         }
+
+        return (int)damg;
     }
 
     void Death()

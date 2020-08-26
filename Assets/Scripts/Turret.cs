@@ -230,6 +230,7 @@ public class Turret : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            UIManager.instance.CreateTextDestroyed(g, gameObject);
             Death();
         }
     }
@@ -237,7 +238,7 @@ public class Turret : MonoBehaviour
     void Death()
     {
         FindObjectOfType<Charater>().champion.propertyChampion.money += 250;
-        UIManager.instace.MakeTextMoney(transform.position, "250g");
+        UIManager.instance.MakeTextMoney(transform.position, "250g");
 
         state = State.Destroy;
         team = Team.Red;

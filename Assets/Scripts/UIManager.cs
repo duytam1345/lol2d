@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager instace;
+    public static UIManager instance;
 
     Charater charater;
 
@@ -50,10 +50,23 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Text tCooldown;
 
+    [SerializeField]
+    Sprite minionCasterBlue;
+    [SerializeField]
+    Sprite minionCasterRed;
+
     [Header("UI")]
 
     public Image imageAvatar;
     public GameObject barTopHealth;
+
+    public GameObject prefabDestroy;
+
+    public GameObject panelKDA;
+
+    public GameObject prefabHealthBarChampion;
+
+    public Text textTimeGame;
 
     [Header("Hiển thị hiệu ứng hiện tại")]
     [SerializeField]
@@ -117,6 +130,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     Text textMoney;
+    [SerializeField]
+    Text textMoneyInShopPanel;
 
     [SerializeField]
     Item itemSelected;
@@ -146,12 +161,27 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     GameObject containRequires;
 
+    //item tren shop
     public GameObject imageItem1;
     public GameObject imageItem2;
     public GameObject imageItem3;
     public GameObject imageItem4;
     public GameObject imageItem5;
     public GameObject imageItem6;
+
+    //item tren bang thong tin player
+    public GameObject imageItem1_UIChamp;
+    public GameObject imageItem2_UIChamp;
+    public GameObject imageItem3_UIChamp;
+    public GameObject imageItem4_UIChamp;
+    public GameObject imageItem5_UIChamp;
+    public GameObject imageItem6_UIChamp;
+
+    public List<SlotInPanelKDA> slotInPanelKDAs = new List<SlotInPanelKDA>();
+
+    public Transform containPanelKDABlue;
+    public Transform containPanelKDARed;
+    public GameObject prefabSlotKDA;
 
     [Header("Biến về")]
     [SerializeField]
@@ -160,9 +190,9 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (!instace)
+        if (!instance)
         {
-            instace = this;
+            instance = this;
         }
         else
         {
@@ -173,6 +203,22 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         charater = FindObjectOfType<Charater>();
+
+        for (int i = 0; i < Mananger.instance.championInGame.Count; i++)
+        {
+            GameObject g = Instantiate(prefabSlotKDA,
+                Mananger.instance.championInGame[i].team == Team.Blue ? containPanelKDABlue : containPanelKDARed);
+            g.GetComponent<SlotInPanelKDA>().c = Mananger.instance.championInGame[i];
+
+            slotInPanelKDAs.Add(g.GetComponent<SlotInPanelKDA>());
+
+            if (Mananger.instance.championInGame[i].isBot)
+            {
+                GameObject ui = Instantiate(prefabHealthBarChampion, GameObject.Find("Canvas").transform);
+                ui.GetComponent<UIFollowTarget>().gTarget = Mananger.instance.championInGame[i].gameObject;
+                Mananger.instance.championInGame[i].uI = ui.GetComponent<UIFollowTarget>();
+            }
+        }
     }
 
     public GameObject panelShop;
@@ -240,6 +286,7 @@ public class UIManager : MonoBehaviour
         textMoveSpeed.text = champion.propertyChampion.moveSpeed_Real.ToString();
 
         textMoney.text = ((int)champion.propertyChampion.money).ToString();
+        textMoneyInShopPanel.text = ((int)champion.propertyChampion.money).ToString();
     }
 
     public IEnumerator FadeOut(Text t, float duration)
@@ -508,6 +555,8 @@ public class UIManager : MonoBehaviour
                     itemSelected.Use(i);
                 }
 
+
+
                 charater.champion.propertyChampion.UpdateValue();
             }
         }
@@ -517,6 +566,7 @@ public class UIManager : MonoBehaviour
     {
         if (inventorySelected)
         {
+
             inventorySelected.item.Sell();
 
             Color cBackground = new Color(0, 0, 0, 0);
@@ -527,21 +577,42 @@ public class UIManager : MonoBehaviour
             inventorySelected.item = null;
 
             inventorySelected = null;
+
+            //Set hinh trang bi
+            #region
+            Color c = new Color(1, 1, 1, 0);
+            if (!charater.champion.item1.item)
+            {
+                imageItem1_UIChamp.transform.GetChild(0).GetComponent<Image>().color = c;
+                imageItem1_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = null;
+            }
+            if (!charater.champion.item2.item)
+            {
+                imageItem2_UIChamp.transform.GetChild(0).GetComponent<Image>().color = c;
+                imageItem2_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = null;
+            }
+            if (!charater.champion.item3.item)
+            {
+                imageItem3_UIChamp.transform.GetChild(0).GetComponent<Image>().color = c;
+                imageItem3_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = null;
+            }
+            if (!charater.champion.item4.item)
+            {
+                imageItem4_UIChamp.transform.GetChild(0).GetComponent<Image>().color = c;
+                imageItem4_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = null;
+            }
+            if (!charater.champion.item5.item)
+            {
+                imageItem5_UIChamp.transform.GetChild(0).GetComponent<Image>().color = c;
+                imageItem5_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = null;
+            }
+            if (!charater.champion.item6.item)
+            {
+                imageItem6_UIChamp.transform.GetChild(0).GetComponent<Image>().color = c;
+                imageItem6_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = null;
+            }
+            #endregion
         }
-
-        //if (charater.champion.tuiDo.ItemSelected)
-        //{
-        //    charater.champion.tuiDo.ItemSelected.Sell();
-
-        //    Color cBackground = new Color(0, 0, 0, 0);
-        //    Color cImage = new Color(1, 1, 1, 0);
-        //    charater.champion.tuiDo.ItemSelected.imgTarget.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-        //    charater.champion.tuiDo.ItemSelected.imgTarget.transform.GetChild(1).GetComponent<Image>().color = cImage;
-
-        //    //print(Convert.ToInt32(charater.champion.tuiDo.ItemSelected.imgTarget.name));
-
-        //    charater.champion.tuiDo.item[Convert.ToInt32(charater.champion.tuiDo.ItemSelected.imgTarget.name)] = null;
-        //}
     }
 
     public void MakeReCallBar()
@@ -663,32 +734,35 @@ public class UIManager : MonoBehaviour
 
     public void BtnUpgradeSkill(string s)
     {
-        if (s == "Q")
-        {
-            charater.champion.levelSkillQ++;
-        }
-        else if (s == "W")
-        {
-            charater.champion.levelSkillW++;
-        }
-        else if (s == "E")
-        {
-            charater.champion.levelSkillE++;
-        }
-        else if (s == "R")
-        {
-            charater.champion.levelSkillR++;
-        }
-        charater.champion.leftPointSkill--;
-        UpdateNodeSkill();
-        charater.champion.SetSkill();
         if (charater.champion.leftPointSkill > 0)
         {
-            LoadPanelUpgradeSkill(charater.champion);
-        }
-        else
-        {
-            StartCoroutine(ShowPanelUpgradeSkill(false));
+            if (s == "Q")
+            {
+                charater.champion.levelSkillQ++;
+            }
+            else if (s == "W")
+            {
+                charater.champion.levelSkillW++;
+            }
+            else if (s == "E")
+            {
+                charater.champion.levelSkillE++;
+            }
+            else if (s == "R")
+            {
+                charater.champion.levelSkillR++;
+            }
+            charater.champion.leftPointSkill--;
+            UpdateNodeSkill();
+            charater.champion.SetSkill();
+            if (charater.champion.leftPointSkill > 0)
+            {
+                LoadPanelUpgradeSkill(charater.champion);
+            }
+            else
+            {
+                StartCoroutine(ShowPanelUpgradeSkill(false));
+            }
         }
     }
 
@@ -709,6 +783,75 @@ public class UIManager : MonoBehaviour
         for (int i = 0; i < charater.champion.levelSkillR; i++)
         {
             listNodeR.GetChild(i).GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    public void CreateTextDestroyed(GameObject a, GameObject b)
+    {
+        GameObject g = Instantiate(prefabDestroy, GameObject.Find("Canvas").transform);
+
+        if (a.GetComponent<Champion>())
+        {
+            g.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite = a.GetComponent<Champion>().spriteAvatar;
+            if (!a.GetComponent<Champion>().isBot)
+            {
+                if (b.GetComponent<Turret>())
+                {
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Trụ địch đã bị phá hủy!";
+                    //g.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = b.GetComponent<Turret>().spriteAvatar;
+                }
+                else if (b.GetComponent<Champion>())
+                {
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Kẻ địch đã bị bạn giết!";
+                    g.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = b.GetComponent<Champion>().spriteAvatar;
+                }
+            }
+            else
+            {
+                if (b.GetComponent<Turret>())
+                {
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Trụ đồng minh đã bị phá hủy!";
+                    //g.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = b.GetComponent<Turret>().spriteAvatar;
+                }
+                else if (b.GetComponent<Champion>())
+                {
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Bạn đã bị hạ gục!";
+                    g.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = b.GetComponent<Champion>().spriteAvatar;
+                }
+            }
+        }
+        else if (a.GetComponent<Turret>())
+        {
+            //g.transform.GetChild(1).GetChild(0).GetComponent<Image>().sprite = a.GetComponent<Turret>().spriteAvatar;
+            if (b.GetComponent<Champion>())
+            {
+                g.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = b.GetComponent<Champion>().spriteAvatar;
+                if (b.GetComponent<Champion>().isBot)
+                {
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Kẻ địch đã bị trụ bắn hạ!";
+                }
+                else
+                {
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Bạn đã bị trụ hạ gục!";
+                }
+            }
+        }
+    }
+
+    public void SetTabPanel(bool b)
+    {
+        if (b)
+        {
+            panelKDA.SetActive(true);
+
+            foreach (var item in slotInPanelKDAs)
+            {
+                item.Set();
+            }
+        }
+        else
+        {
+            panelKDA.SetActive(false);
         }
     }
 }

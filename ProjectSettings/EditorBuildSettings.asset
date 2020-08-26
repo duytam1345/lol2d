@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/PickChampion.unity
+    guid: 0de1f5e608f9cb548bf7bd94a452eda1
+  - enabled: 1
+    path: Assets/Scenes/Play.unity
+    guid: 8a5cd3a8c384d034993bebaefd0204a4
   m_configObjects: {}

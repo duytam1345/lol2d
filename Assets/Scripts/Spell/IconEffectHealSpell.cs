@@ -10,7 +10,7 @@ public class IconEffectHealSpell : IconEffect
 
         if (timeCooldownSecond <= 0)
         {
-            Destroy(UIManager.instace.listEffect["Heal Spell"].gameObject);
+            Destroy(UIManager.instance.listEffect["Heal Spell"].gameObject);
             Destroy(gameObject);
         }
     }

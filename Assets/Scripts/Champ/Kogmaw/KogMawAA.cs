@@ -10,6 +10,8 @@ public class KogMawAA : MonoBehaviour
     public GameObject target;
 
     public float damage;
+    public int critRate;
+    public int lifeSteel;
     public float speed;
 
     public bool onW;
@@ -38,17 +40,33 @@ public class KogMawAA : MonoBehaviour
         if (target.GetComponent<Creep>())
         {
             float dmg = damage;
+
+            int r = Random.Range(0, 100);
+            if (r <= critRate)
+            {
+                dmg *= 2;
+            }
+
             if (onW)
             {
-                dmg += target.GetComponent<Creep>().property.healthPoint / 100 * 3;
+                dmg += (int)(target.GetComponent<Creep>().property.healthPoint / 100 *
+                    ((1.25f+(.75*baseChamp.levelSkillW))+baseChamp.propertyChampion.magicDamage_Real/100));
             }
-            target.GetComponent<Creep>().TakeDamage(gameObject, (int)dmg);
+
+            int d = target.GetComponent<Creep>().TakeDamage(baseChamp.gameObject, (int)dmg);
+            baseChamp.TakeHealth(d / 100 * lifeSteel);
         }
         else if (target.GetComponent<Turret>())
         {
-            target.GetComponent<Turret>().TakeDamage(gameObject, (int)damage);
-            UIManager.instace.MakeTextDamage(target.transform.position, damage.ToString());
+            target.GetComponent<Turret>().TakeDamage(baseChamp.gameObject, (int)damage);
+            UIManager.instance.MakeTextDamage(target.transform.position, damage.ToString());
         }
+        else if (target.GetComponent<Champion>())
+        {
+            target.GetComponent<Champion>().TakeDamage(baseChamp.gameObject, (int)damage,target.transform.position);
+            UIManager.instance.MakeTextDamage(target.transform.position, damage.ToString());
+        }
+
 
         Vector2 pos = new Vector2(
             Random.Range(target.transform.position.x - .5f, target.transform.position.x + .5f),

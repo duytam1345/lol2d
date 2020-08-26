@@ -6,11 +6,7 @@ using UnityEngine.UI;
 public class Charater : MonoBehaviour
 {
 
-
     public Champion champion;
-
-    [SerializeField]
-    UIFollowTarget uI;
 
     public int currentHealth;
 
@@ -22,9 +18,6 @@ public class Charater : MonoBehaviour
     Animator anim;
 
     [SerializeField]
-    Vector2 targetPos;
-
-    [SerializeField]
     bool attacking;
 
     //private void Awake()
@@ -32,30 +25,63 @@ public class Charater : MonoBehaviour
     //champion =  GameObject.Find("aasd").GetComponent<MundoChampion>();
     //}
 
+    private void Start()
+    {
+        champion = GetComponent<Champion>();
+    }
+
     void Update()
     {
-        UIManager.instace.UpdateImage(champion);
+        UIManager.instance.UpdateImage(champion);
 
         champion.SkillPassive();
         if (InputManager.m_KeyDownQ)
         {
-            champion.StopReCall();
-            champion.SkillQ();
+            if (InputManager.m_KeyCtrl)
+            {
+                UIManager.instance.BtnUpgradeSkill("Q");
+            }
+            else
+            {
+                champion.StopReCall();
+                champion.SkillQ();
+            }
         }
         if (InputManager.m_KeyDownW)
         {
-            champion.StopReCall();
-            champion.SkillW();
+            if (InputManager.m_KeyCtrl)
+            {
+                UIManager.instance.BtnUpgradeSkill("W");
+            }
+            else
+            {
+                champion.StopReCall();
+                champion.SkillW();
+            }
         }
         if (InputManager.m_KeyDownE)
         {
-            champion.StopReCall();
-            champion.SkillE();
+            if (InputManager.m_KeyCtrl)
+            {
+                UIManager.instance.BtnUpgradeSkill("E");
+            }
+            else
+            {
+                champion.StopReCall();
+                champion.SkillE();
+            }
         }
         if (InputManager.m_KeyDownR)
         {
-            champion.StopReCall();
-            champion.SkillR();
+            if (InputManager.m_KeyCtrl)
+            {
+                UIManager.instance.BtnUpgradeSkill("R");
+            }
+            else
+            {
+                champion.StopReCall();
+                champion.SkillR();
+            }
         }
 
         if (InputManager.m_KeyDownD)
@@ -70,7 +96,7 @@ public class Charater : MonoBehaviour
 
         if (InputManager.m_KeyDownP)
         {
-            UIManager.instace.ClickShop();
+            UIManager.instance.ClickShop();
         }
 
         if (InputManager.m_KeyDownB)
@@ -78,15 +104,35 @@ public class Charater : MonoBehaviour
             champion.ReCall();
         }
 
+        if (InputManager.m_KeyDownTab)
+        {
+            UIManager.instance.SetTabPanel(true);
+        }
+        if (InputManager.m_KeyUpTab)
+        {
+            UIManager.instance.SetTabPanel(false);
+        }
+
+        if (InputManager.m_KeyDownC)
+        {
+            transform.Find("Circle Range").localScale =
+            new Vector3(champion.propertyChampion.attackRange_Real, champion.propertyChampion.attackRange_Real, 0);
+            transform.Find("Circle Range").gameObject.SetActive(true);
+        }
+        if (InputManager.m_KeyUpC)
+        {
+            transform.Find("Circle Range").gameObject.SetActive(false);
+        }
+
         switch (champion.state)
         {
             case Champion.State.Idle:
                 break;
             case Champion.State.Walk:
-                Move();
+                champion.Move();
                 break;
             case Champion.State.WalkToAttack:
-                MoveToAttack();
+                champion.MoveToAttack();
                 break;
             case Champion.State.Attack:
                 champion.LoadAttack();
@@ -100,6 +146,11 @@ public class Charater : MonoBehaviour
         SetCursor();
 
         if (InputManager.m_GetMouseButtonDownRight)
+        {
+            Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
+            RightClick();
+        }
+        if (InputManager.m_GetMouseButtonRight)
         {
             RightClick();
         }
@@ -153,20 +204,20 @@ public class Charater : MonoBehaviour
 
             if (n == "Ong chu tiem trang bi")
             {
-                UIManager.instace.ClickShop();
+                UIManager.instance.ClickShop();
             }
             else if (r.collider.GetComponent<Creep>())
             {
-                UIManager.instace.SetInfoPanel(r.collider.gameObject);
+                UIManager.instance.SetInfoPanel(r.collider.gameObject);
             }
             else if (r.collider.GetComponent<Turret>())
             {
-                UIManager.instace.SetInfoPanel(r.collider.gameObject);
+                UIManager.instance.SetInfoPanel(r.collider.gameObject);
             }
         }
         else
         {
-            UIManager.instace.SetInfoPanel(null);
+            UIManager.instance.SetInfoPanel(null);
         }
     }
 
@@ -203,22 +254,44 @@ public class Charater : MonoBehaviour
 
     void Check(RaycastHit2D r)
     {
-        if (r.collider && r.collider.tag == "Minion")
+        if (r.collider && r.collider.GetComponent<Creep>())
         {
             if (r.collider.GetComponent<Creep>().team != champion.team && champion.canAttack)
             {
                 champion.targetAttack = r.collider.gameObject;
                 champion.state = Champion.State.WalkToAttack;
 
+                Vector2 dir = (champion.targetAttack.transform.position - champion.transform.position).normalized;
+                champion.anim.SetFloat("VelocityX", dir.x);
+                champion.anim.SetFloat("VelocityY", dir.y);
+
                 champion.StopReCall();
             }
         }
-        else if (r.collider && r.collider.tag == "Turret" && r.collider.GetComponent<Turret>().team != champion.team)
+        else if (r.collider && r.collider.GetComponent<Turret>())
         {
             if (r.collider.GetComponent<Turret>().team != champion.team && champion.canAttack)
             {
                 champion.targetAttack = r.collider.gameObject;
                 champion.state = Champion.State.WalkToAttack;
+
+                Vector2 dir = (champion.targetAttack.transform.position - champion.transform.position).normalized;
+                champion.anim.SetFloat("VelocityX", dir.x);
+                champion.anim.SetFloat("VelocityY", dir.y);
+
+                champion.StopReCall();
+            }
+        }
+        else if (r.collider && r.collider.GetComponent<Champion>()&& r.collider.GetComponent<Champion>().team != champion.team)
+        {
+            if (r.collider.GetComponent<Champion>().team != champion.team && champion.canAttack)
+            {
+                champion.targetAttack = r.collider.gameObject;
+                champion.state = Champion.State.WalkToAttack;
+
+                Vector2 dir = (champion.targetAttack.transform.position - champion.transform.position).normalized;
+                champion.anim.SetFloat("VelocityX", dir.x);
+                champion.anim.SetFloat("VelocityY", dir.y);
 
                 champion.StopReCall();
             }
@@ -228,60 +301,9 @@ public class Charater : MonoBehaviour
             attacking = false;
             champion.state = Champion.State.Walk;
             champion.targetAttack = null;
-            targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-
-            Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
+            champion.targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
 
             champion.StopReCall();
         }
     }
-
-    void MoveToAttack()
-    {
-        if (champion.targetAttack)
-        {
-            targetPos = Vector2.zero;
-            attacking = true;
-            if (Vector2.Distance(transform.position, champion.targetAttack.transform.position) > champion.propertyChampion.attackRange_Real)
-            {
-                Vector2 dir = (Vector2)champion.targetAttack.transform.position - (Vector2)transform.position;
-
-                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed_Real;
-
-                champion.state = Champion.State.WalkToAttack;
-            }
-            else
-            {
-                rb2d.velocity = Vector2.zero;
-
-                champion.state = Champion.State.Attack;
-            }
-        }
-        else
-        {
-            champion.state = Champion.State.Idle;
-            attacking = false;
-        }
-    }
-
-    void Move()
-    {
-        if (targetPos != Vector2.zero)
-        {
-            if (Vector2.Distance(transform.position, targetPos) >= .2f)
-            {
-                Vector2 dir = targetPos - (Vector2)transform.position;
-
-                rb2d.velocity = (dir.normalized) * champion.propertyChampion.moveSpeed_Real;
-                champion.state = Champion.State.Walk;
-            }
-            else
-            {
-                champion.state = Champion.State.Idle;
-                targetPos = Vector2.zero;
-                rb2d.velocity = Vector2.zero;
-            }
-        }
-    }
-
 }

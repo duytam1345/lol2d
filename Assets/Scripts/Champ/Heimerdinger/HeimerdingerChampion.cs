@@ -9,7 +9,6 @@ public class HeimerdingerChampion : Champion
 
     [Header("Chiêu Q")]
     public Sprite spriteUpgradeQ;
-    public Sprite spriteQ;
     public GameObject turretQ;
     public int costQ;
     public List<H28GOfHeimerdinger> h28GOfHeimerdingers;
@@ -20,13 +19,11 @@ public class HeimerdingerChampion : Champion
 
     [Header("Chiêu W")]
     public Sprite spriteUpgradeW;
-    public Sprite spriteW;
     public GameObject prefabSkillW;
     public int costW;
 
     [Header("Chiêu E")]
     public Sprite spriteUpgradeE;
-    public Sprite spriteE;
     public GameObject prefabE;
     public int costE;
 
@@ -46,22 +43,45 @@ public class HeimerdingerChampion : Champion
         GetComponent<IconCooldownSkillQHeimerdinger>().icon = iconEffectQ.GetComponent<IconEffect>().icon;
         GetComponent<IconCooldownSkillQHeimerdinger>().heimerdinger = this;
 
-        UIManager.instace.CreateSlotEffect("Skill Q Heimerdinger", GetComponent<IconEffect>());
+        UIManager.instance.CreateSlotEffect("Skill Q Heimerdinger", GetComponent<IconEffect>());
 
         h28GOfHeimerdingers.Add(null);
         h28GOfHeimerdingers.Add(null);
         h28GOfHeimerdingers.Add(null);
+        LevelUp();
     }
 
     void Update()
     {
+        //set ainm
+        if (anim.GetFloat("VelocityX") < 0)
+        {
+            anim.GetComponent<SpriteRenderer>().flipX = false;
+            anim.transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = false;
+        }
+        else if (anim.GetFloat("VelocityX") > 0)
+        {
+            anim.GetComponent<SpriteRenderer>().flipX = true;
+            anim.transform.GetChild(0).GetComponent<SpriteRenderer>().flipX = true;
+        }
+
+        if (state == State.Walk || state == State.WalkToAttack)
+        {
+            anim.SetBool("Move", true);
+        }
+        else
+        {
+            anim.SetBool("Move", false);
+        }
+        //
+
         if (isDeath)
         {
             timeLeftToRespawn -= Time.deltaTime;
-            UIManager.instace.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = ((int)timeLeftToRespawn).ToString();
+            UIManager.instance.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = ((int)timeLeftToRespawn).ToString();
             if (timeLeftToRespawn <= 0)
             {
-                UIManager.instace.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = "";
+                UIManager.instance.imageAvatar.transform.GetChild(0).GetComponent<Text>().text = "";
                 SpawnAtFountain();
             }
         }
@@ -111,6 +131,33 @@ public class HeimerdingerChampion : Champion
         }
     }
 
+    public override void Move()
+    {
+        base.Move();
+        if (rb2d.velocity.x != 0)
+        {
+            anim.SetFloat("VelocityX", rb2d.velocity.normalized.x);
+        }
+        if (rb2d.velocity.y != 0)
+        {
+            anim.SetFloat("VelocityY", rb2d.velocity.normalized.y);
+        }
+    }
+
+    public override void SetSkill()
+    {
+        //W
+        costW = 40 + 10 * levelSkillW;
+        costSkillW = costW + " năng lượng";
+
+        timeCoolDownSkillW = 12 - 1 * levelSkillW;
+        //
+
+        //R
+        timeCoolDownSkillR -= 115 - levelSkillR * 15;
+        //
+    }
+
     public override void Attack()
     {
         GameObject a = Instantiate(objectAttack, transform.position, Quaternion.identity);
@@ -126,7 +173,7 @@ public class HeimerdingerChampion : Champion
 
     public override void SkillQ()
     {
-        if (timeCoolDownSkillQSecond <= 0 && propertyChampion.manaPointSecond >= costQ)
+        if (timeCoolDownSkillQSecond <= 0 && propertyChampion.manaPointSecond >= costQ && levelSkillQ > 0)
         {
             Vector2 pos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
 
@@ -139,6 +186,7 @@ public class HeimerdingerChampion : Champion
                         leftKit--;
 
                         GameObject g = Instantiate(turretQ, pos, Quaternion.identity);
+                        g.GetComponent<H28GOfHeimerdinger>().c = this;
                         g.GetComponent<H28GOfHeimerdinger>().health = 125 + propertyChampion.level * 15 + 16;
                         g.GetComponent<H28GOfHeimerdinger>().damage = propertyChampion.magicDamage_Real;
 
@@ -185,8 +233,8 @@ public class HeimerdingerChampion : Champion
 
                     inUpgrade = false;
                     timeCoolDownSkillRSecond = timeCoolDownSkillR;
-                    Destroy(UIManager.instace.listEffect["Skill R Heimerdinger"].gameObject);
-                    UIManager.instace.listEffect.Remove("Skill R Heimerdinger");
+                    Destroy(UIManager.instance.listEffect["Skill R Heimerdinger"].gameObject);
+                    UIManager.instance.listEffect.Remove("Skill R Heimerdinger");
                     SetSpriteSkillNormal();
                 }
             }
@@ -195,33 +243,33 @@ public class HeimerdingerChampion : Champion
 
     public override void SkillW()
     {
-        if (timeCoolDownSkillWSecond <= 0 && propertyChampion.manaPointSecond >= costW)
+        if (timeCoolDownSkillWSecond <= 0 && propertyChampion.manaPointSecond >= costW && levelSkillW > 0)
         {
             propertyChampion.manaPointSecond -= costW;
+            Vector3 p = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
             if (!inUpgrade)
             {
-                StartCoroutine(SpawnW(1));
+                StartCoroutine(SpawnW(1, p));
             }
             else
             {
-                StartCoroutine(SpawnW(4));
+                StartCoroutine(SpawnW(4, p));
                 inUpgrade = false;
                 timeCoolDownSkillRSecond = timeCoolDownSkillR;
                 SetSpriteSkillNormal();
 
-                Destroy(UIManager.instace.listEffect["Skill R Heimerdinger"].gameObject);
-                UIManager.instace.listEffect.Remove("Skill R Heimerdinger");
+                Destroy(UIManager.instance.listEffect["Skill R Heimerdinger"].gameObject);
+                UIManager.instance.listEffect.Remove("Skill R Heimerdinger");
             }
             SetSpriteSkillNormal();
         }
     }
 
-    IEnumerator SpawnW(int index)
+    IEnumerator SpawnW(int index, Vector3 p)
     {
+        bool isUpgrade = inUpgrade;
         for (int c = 0; c < index; c++)
         {
-            Vector3 p = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-
             for (int i = -2; i <= 2; i++)
             {
                 GameObject newG = new GameObject();
@@ -249,7 +297,9 @@ public class HeimerdingerChampion : Champion
                 }
 
                 GameObject g = Instantiate(prefabSkillW, newG.transform.position, Quaternion.identity);
-                g.GetComponent<RocketOfHeimerdinger>().dmg = propertyChampion.physicsDamage_Real;
+                g.GetComponent<RocketOfHeimerdinger>().dir = p - g.transform.position;
+                g.GetComponent<RocketOfHeimerdinger>().isUpgrade = isUpgrade;
+                g.GetComponent<RocketOfHeimerdinger>().c = this;
                 g.GetComponent<RocketOfHeimerdinger>().team = team;
 
                 Destroy(newG);
@@ -263,7 +313,7 @@ public class HeimerdingerChampion : Champion
 
     public override void SkillE()
     {
-        if (timeCoolDownSkillESecond <= 0 && propertyChampion.manaPointSecond >= costE)
+        if (timeCoolDownSkillESecond <= 0 && propertyChampion.manaPointSecond >= costE && levelSkillE > 0)
         {
             Vector2 p = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
 
@@ -272,6 +322,7 @@ public class HeimerdingerChampion : Champion
                 GameObject g = Instantiate(prefabE, transform.position, Quaternion.identity);
                 g.GetComponent<SkillEHeimerdinger>().damage = propertyChampion.magicDamage_Real;
                 g.GetComponent<SkillEHeimerdinger>().target = p;
+                g.GetComponent<SkillEHeimerdinger>().isUpgrade = inUpgrade;
                 if (!inUpgrade)
                 {
                     g.GetComponent<SkillEHeimerdinger>().intLeft = 1;
@@ -285,8 +336,8 @@ public class HeimerdingerChampion : Champion
                     timeCoolDownSkillRSecond = timeCoolDownSkillR;
                     SetSpriteSkillNormal();
 
-                    Destroy(UIManager.instace.listEffect["Skill R Heimerdinger"].gameObject);
-                    UIManager.instace.listEffect.Remove("Skill R Heimerdinger");
+                    Destroy(UIManager.instance.listEffect["Skill R Heimerdinger"].gameObject);
+                    UIManager.instance.listEffect.Remove("Skill R Heimerdinger");
                     SetSpriteSkillNormal();
                 }
 
@@ -297,14 +348,14 @@ public class HeimerdingerChampion : Champion
 
     public override void SkillR()
     {
-        if (timeCoolDownSkillRSecond <= 0)
+        if (timeCoolDownSkillRSecond <= 0 && propertyChampion.manaPointSecond >= 100 && levelSkillQ > 0)
         {
             if (!inUpgrade)
             {
                 inUpgrade = true;
                 SetSpriteSkillUpgrade();
 
-                UIManager.instace.CreateSlotEffect("Skill R Heimerdinger", iconEffectR.GetComponent<IconEffect>());
+                UIManager.instance.CreateSlotEffect("Skill R Heimerdinger", iconEffectR.GetComponent<IconEffect>());
             }
             else
             {
@@ -312,41 +363,43 @@ public class HeimerdingerChampion : Champion
                 timeCoolDownSkillRSecond = timeCoolDownSkillR;
                 SetSpriteSkillNormal();
 
-                Destroy(UIManager.instace.listEffect["Skill R Heimerdinger"].gameObject);
-                UIManager.instace.listEffect.Remove("Skill R Heimerdinger");
+                Destroy(UIManager.instance.listEffect["Skill R Heimerdinger"].gameObject);
+                UIManager.instance.listEffect.Remove("Skill R Heimerdinger");
             }
         }
     }
 
     void SetSpriteSkillUpgrade()
     {
-        UIManager.instace.imageSkillQBg.sprite = spriteUpgradeQ;
-        UIManager.instace.imageSkillQ.sprite = spriteUpgradeQ;
-        UIManager.instace.imageSkillWBg.sprite = spriteUpgradeW;
-        UIManager.instace.imageSkillW.sprite = spriteUpgradeW;
-        UIManager.instace.imageSkillEBg.sprite = spriteUpgradeE;
-        UIManager.instace.imageSkillE.sprite = spriteUpgradeE;
+        UIManager.instance.imageSkillQBg.sprite = spriteUpgradeQ;
+        UIManager.instance.imageSkillQ.sprite = spriteUpgradeQ;
+        UIManager.instance.imageSkillWBg.sprite = spriteUpgradeW;
+        UIManager.instance.imageSkillW.sprite = spriteUpgradeW;
+        UIManager.instance.imageSkillEBg.sprite = spriteUpgradeE;
+        UIManager.instance.imageSkillE.sprite = spriteUpgradeE;
     }
 
     void SetSpriteSkillNormal()
     {
-        UIManager.instace.imageSkillQBg.sprite = spriteQ;
-        UIManager.instace.imageSkillQ.sprite = spriteQ;
-        UIManager.instace.imageSkillWBg.sprite = spriteW;
-        UIManager.instace.imageSkillW.sprite = spriteW;
-        UIManager.instace.imageSkillEBg.sprite = spriteE;
-        UIManager.instace.imageSkillE.sprite = spriteE;
+        UIManager.instance.imageSkillQBg.sprite = spriteQ;
+        UIManager.instance.imageSkillQ.sprite = spriteQ;
+        UIManager.instance.imageSkillWBg.sprite = spriteW;
+        UIManager.instance.imageSkillW.sprite = spriteW;
+        UIManager.instance.imageSkillEBg.sprite = spriteE;
+        UIManager.instance.imageSkillE.sprite = spriteE;
     }
 
     public override void Death()
     {
+        death++;
+
         rb2d.velocity = Vector2.zero;
         timeLeftToRespawn = CongThuc.TimeToReSpawn(this);
         isDeath = true;
         canMove = false;
         rend.SetActive(false);
-        UIManager.instace.imageAvatar.color = new Color(.3f, .3f, .3f, 1);
-        UIManager.instace.barTopHealth.SetActive(false);
+        UIManager.instance.imageAvatar.color = new Color(.3f, .3f, .3f, 1);
+        UIManager.instance.barTopHealth.SetActive(false);
         state = State.Death;
     }
 }

@@ -34,7 +34,7 @@ public class GhostSpell : Spell
             actived = true;
 
             GameObject icon = Instantiate(iconEffect);
-            UIManager.instace.CreateSlotEffect("Ghost Spell", icon.GetComponent<IconEffect>());
+            UIManager.instance.CreateSlotEffect("Ghost Spell", icon.GetComponent<IconEffect>());
 
             GameObject g = Instantiate(effect, transform.position, Quaternion.identity, champion.transform);
 

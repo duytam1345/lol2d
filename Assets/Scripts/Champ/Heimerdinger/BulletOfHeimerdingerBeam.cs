@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BulletOfHeimerdingerBeam : MonoBehaviour
 {
+    public Team team;
+    public Champion c;
     public Vector3 dir;
     public float speed;
     public float damage;
@@ -29,9 +31,9 @@ public class BulletOfHeimerdingerBeam : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Creep>())
+        if (collision.GetComponent<Creep>() && collision.GetComponent<Creep>().team != team)
         {
-            collision.GetComponent<Creep>().TakeDamage(gameObject, (int)damage);
+            collision.GetComponent<Creep>().TakeDamage(c.gameObject, (int)damage);
         }
     }
 }

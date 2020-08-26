@@ -79,7 +79,7 @@ public class PropertyChampion
     public int cooldown_Real;
 
     public int critRate;
-    public Dictionary<string, float> critRateExtra = new Dictionary<string, float>();
+    public Dictionary<string, int> critRateExtra = new Dictionary<string, int>();
     public int critRate_Real;
 
     public void UpdateValue()
@@ -202,7 +202,7 @@ public class PropertyChampion
 
         foreach (var item in critRateExtra.Values)
         {
-            critRate_Real += (int)item;
+            critRate_Real = Mathf.Clamp(critRate_Real + item, 0, 100);
         }
     }
 }
@@ -250,7 +250,7 @@ public class Champion : MonoBehaviour
         item6.transform.GetChild(0).GetComponent<Image>().color = cDeselect;
         slot.transform.GetChild(0).GetComponent<Image>().color = cCelect;
 
-        UIManager.instace.SelectedInventory(slot);
+        UIManager.instance.SelectedInventory(slot);
 
 
         //var id = int.Parse(gameObject.name);
@@ -271,6 +271,15 @@ public class Champion : MonoBehaviour
         Heal,
         None
     }
+
+    public string nameChampion;
+    [Header("Image")]
+    public Sprite spriteAvatar;
+    public Sprite spritePassive;
+    public Sprite spriteQ;
+    public Sprite spriteW;
+    public Sprite spriteE;
+    public Sprite spriteR;
 
     [Header("Thời Gian Hồi Chiêu")]
 
@@ -293,8 +302,6 @@ public class Champion : MonoBehaviour
     public int levelSkillE;
     [Range(0, 3)]
     public int levelSkillR;
-
-
 
     [Header("Thông tin chiêu")]
     public string namePassive;
@@ -355,11 +362,18 @@ public class Champion : MonoBehaviour
     public float timePerHalfSecond;
     public bool canMove = true;
     public bool canAttack = true;
+    public Animator anim;
 
     [Header("Chết")]
     [SerializeField]
     public bool isDeath;
     public float timeLeftToRespawn;
+
+    [Header("Thống kê")]
+    public int kill;
+    public int death;
+    public int a;
+    public int cr;
 
     public void PerSecond()
     {
@@ -422,13 +436,16 @@ public class Champion : MonoBehaviour
 
     public void LevelUp()
     {
-        propertyChampion.level++;
-        leftPointSkill++;
-        textLevel.text = propertyChampion.level.ToString();
+        if (propertyChampion.level < 18)
+        {
+            propertyChampion.level++;
+            leftPointSkill++;
+            textLevel.text = propertyChampion.level.ToString();
 
-        SetProperty();
+            SetProperty();
 
-        UIManager.instace.LoadPanelUpgradeSkill(this);
+            UIManager.instance.LoadPanelUpgradeSkill(this);
+        }
     }
 
     void SetProperty()
@@ -467,9 +484,11 @@ public class Champion : MonoBehaviour
     //Tấn công:
 
     //Đối tượng tấn công truyền sát thương gốc qua TakeDamage() và tên của đối tượng tấn công. 
+    //Tính chí mạng
     //Đồng thời tạo hiệu ứng(nếu có).
 
     //Đối tượng bị tấn công sẽ tính toán ra kết quả cuối cùng(giáp, kháng phép,...).
+    //Tính hút máu trả về
     //Tạo ui sát thương gây ra và thông báo kết liễu với tên của đối tượng tấn công.
 
 
@@ -483,11 +502,18 @@ public class Champion : MonoBehaviour
 
     public bool isRangeChamp;
 
+    public UIFollowTarget uI;
+
+    public bool isBot;
+
     public virtual void Start()
     {
         BtnItem.KhiTuiDoClick += KhiChon1Item;
 
         SkillPassive();
+
+        rb2d = GetComponent<Rigidbody2D>();
+        anim = transform.GetChild(0).GetComponent<Animator>();
 
         propertyChampion.UpdateValue();
 
@@ -506,6 +532,35 @@ public class Champion : MonoBehaviour
         GetComponents<Spell>()[1].effect = spellF.GetComponent<Spell>().effect;
         GetComponents<Spell>()[1].iconEffect = spellF.GetComponent<Spell>().iconEffect;
         spellF = GetComponents<Spell>()[1];
+
+        //Set With Champ
+        textLevel = GameObject.Find("Bar Top Player").transform.Find("Level").GetChild(0).GetComponent<Text>();
+        GameObject.Find("Bar Top Player").transform.Find("Text").GetComponent<Text>().text = nameChampion;
+        //Avatar
+        GameObject.Find("Avatar").GetComponent<Image>().sprite = spriteAvatar;
+        //Nội tại
+        GameObject.Find("Skill Passive").GetComponent<Image>().sprite = spritePassive;
+        GameObject.Find("Skill Passive (1)").GetComponent<Image>().sprite = spritePassive;
+        //Q
+        GameObject.Find("Skill Q").GetComponent<Image>().sprite = spriteQ;
+        GameObject.Find("Skill 1 (1)").GetComponent<Image>().sprite = spriteQ;
+        //W
+        GameObject.Find("Skill W").GetComponent<Image>().sprite = spriteW;
+        GameObject.Find("Skill 2 (1)").GetComponent<Image>().sprite = spriteW;
+        //E
+        GameObject.Find("Skill E").GetComponent<Image>().sprite = spriteE;
+        GameObject.Find("Skill 3 (1)").GetComponent<Image>().sprite = spriteE;
+        //R
+        GameObject.Find("Skill R").GetComponent<Image>().sprite = spriteR;
+        GameObject.Find("Skill 4 (1)").GetComponent<Image>().sprite = spriteR;
+        //Iteam
+        item1 = UIManager.instance.imageItem1.GetComponent<SlotInventory>();
+        item2 = UIManager.instance.imageItem2.GetComponent<SlotInventory>();
+        item3 = UIManager.instance.imageItem3.GetComponent<SlotInventory>();
+        item4 = UIManager.instance.imageItem4.GetComponent<SlotInventory>();
+        item5 = UIManager.instance.imageItem5.GetComponent<SlotInventory>();
+        item6 = UIManager.instance.imageItem6.GetComponent<SlotInventory>();
+
     }
 
     public virtual void LoadAttack()
@@ -569,9 +624,14 @@ public class Champion : MonoBehaviour
 
             Color cBackground = new Color(0, 0, 0, 1);
             Color cImage = new Color(1, 1, 1, 1);
-            UIManager.instace.imageItem1.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
-            UIManager.instace.imageItem1.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-            UIManager.instace.imageItem1.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem1.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
+            UIManager.instance.imageItem1.transform.GetChild(0).GetComponent<Image>().color = cBackground;
+            UIManager.instance.imageItem1.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem1_UIChamp.GetComponent<SlotInventory>().item = item;
+            UIManager.instance.imageItem1_UIChamp.transform.GetChild(0).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem1_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = item.sprite;
             return 1;
         }
         else if (!item2.item)
@@ -580,9 +640,14 @@ public class Champion : MonoBehaviour
 
             Color cBackground = new Color(0, 0, 0, 1);
             Color cImage = new Color(1, 1, 1, 1);
-            UIManager.instace.imageItem2.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
-            UIManager.instace.imageItem2.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-            UIManager.instace.imageItem2.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem2.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
+            UIManager.instance.imageItem2.transform.GetChild(0).GetComponent<Image>().color = cBackground;
+            UIManager.instance.imageItem2.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem2_UIChamp.GetComponent<SlotInventory>().item = item;
+            UIManager.instance.imageItem2_UIChamp.transform.GetChild(0).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem2_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = item.sprite;
             return 2;
         }
         else if (!item3.item)
@@ -591,9 +656,14 @@ public class Champion : MonoBehaviour
 
             Color cBackground = new Color(0, 0, 0, 1);
             Color cImage = new Color(1, 1, 1, 1);
-            UIManager.instace.imageItem3.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
-            UIManager.instace.imageItem3.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-            UIManager.instace.imageItem3.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem3.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
+            UIManager.instance.imageItem3.transform.GetChild(0).GetComponent<Image>().color = cBackground;
+            UIManager.instance.imageItem3.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem3_UIChamp.GetComponent<SlotInventory>().item = item;
+            UIManager.instance.imageItem3_UIChamp.transform.GetChild(0).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem3_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = item.sprite;
             return 3;
         }
         else if (!item4.item)
@@ -602,9 +672,14 @@ public class Champion : MonoBehaviour
 
             Color cBackground = new Color(0, 0, 0, 1);
             Color cImage = new Color(1, 1, 1, 1);
-            UIManager.instace.imageItem4.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
-            UIManager.instace.imageItem4.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-            UIManager.instace.imageItem4.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem4.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
+            UIManager.instance.imageItem4.transform.GetChild(0).GetComponent<Image>().color = cBackground;
+            UIManager.instance.imageItem4.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem4_UIChamp.GetComponent<SlotInventory>().item = item;
+            UIManager.instance.imageItem4_UIChamp.transform.GetChild(0).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem4_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = item.sprite;
             return 4;
         }
         else if (!item5.item)
@@ -613,9 +688,14 @@ public class Champion : MonoBehaviour
 
             Color cBackground = new Color(0, 0, 0, 1);
             Color cImage = new Color(1, 1, 1, 1);
-            UIManager.instace.imageItem5.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
-            UIManager.instace.imageItem5.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-            UIManager.instace.imageItem5.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem5.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
+            UIManager.instance.imageItem5.transform.GetChild(0).GetComponent<Image>().color = cBackground;
+            UIManager.instance.imageItem5.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem5_UIChamp.GetComponent<SlotInventory>().item = item;
+            UIManager.instance.imageItem5_UIChamp.transform.GetChild(0).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem5_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = item.sprite;
             return 5;
         }
         else if (!item6.item)
@@ -624,9 +704,13 @@ public class Champion : MonoBehaviour
 
             Color cBackground = new Color(0, 0, 0, 1);
             Color cImage = new Color(1, 1, 1, 1);
-            UIManager.instace.imageItem6.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
-            UIManager.instace.imageItem6.transform.GetChild(0).GetComponent<Image>().color = cBackground;
-            UIManager.instace.imageItem6.transform.GetChild(1).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem6.transform.GetChild(1).GetComponent<Image>().sprite = item.sprite;
+            UIManager.instance.imageItem6.transform.GetChild(0).GetComponent<Image>().color = cBackground;
+            UIManager.instance.imageItem6.transform.GetChild(1).GetComponent<Image>().color = cImage;
+
+            UIManager.instance.imageItem6_UIChamp.GetComponent<SlotInventory>().item = item;
+            UIManager.instance.imageItem6_UIChamp.transform.GetChild(0).GetComponent<Image>().color = cImage;
+            UIManager.instance.imageItem6_UIChamp.transform.GetChild(0).GetComponent<Image>().sprite = item.sprite;
             return 6;
         }
         else
@@ -644,10 +728,11 @@ public class Champion : MonoBehaviour
             (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
             (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
 
-        UIManager.instace.MakeTextDamage(rectPos, ((int)dmg).ToString());
+        UIManager.instance.MakeTextDamage(rectPos, ((int)dmg).ToString());
 
         if (propertyChampion.healthPointSecond <= 0)
         {
+            UIManager.instance.CreateTextDestroyed(g, gameObject);
             Death();
         }
     }
@@ -657,8 +742,8 @@ public class Champion : MonoBehaviour
         float result = Mathf.Clamp(propertyChampion.healthPointSecond + amount, 0, propertyChampion.healthPoint_Real);
         if (result - propertyChampion.healthPointSecond > 0)
         {
+            UIManager.instance.MakeTextHeal(transform.position, (result - propertyChampion.healthPointSecond).ToString());
             propertyChampion.healthPointSecond += (result - propertyChampion.healthPointSecond);
-            UIManager.instace.MakeTextHeal(transform.position, (result - propertyChampion.healthPointSecond).ToString());
         }
     }
 
@@ -683,8 +768,8 @@ public class Champion : MonoBehaviour
         rend.SetActive(true);
         state = State.Idle;
         transform.position = (team == Team.Blue ? Mananger.instance.fountainBlue.transform.position : Mananger.instance.fountainRed.transform.position);
-        UIManager.instace.imageAvatar.color = new Color(1f, 1f, 1f, 1);
-        UIManager.instace.barTopHealth.SetActive(true);
+        UIManager.instance.imageAvatar.color = new Color(1f, 1f, 1f, 1);
+        UIManager.instance.barTopHealth.SetActive(true);
         Camera.main.transform.position = new Vector3(transform.position.x, 0, -10);
     }
 
@@ -695,10 +780,14 @@ public class Champion : MonoBehaviour
             recalling = true;
             GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             state = State.Idle;
-            UIManager.instace.MakeReCallBar();
 
-            GameObject e = Instantiate(prefabEffect, transform.position, Quaternion.identity);
-            e.name = "Effect Recall";
+            if (!isBot)
+            {
+                UIManager.instance.MakeReCallBar();
+
+                GameObject e = Instantiate(prefabEffect, transform.position, Quaternion.identity);
+                e.name = "Effect Recall";
+            }
         }
     }
 
@@ -712,13 +801,76 @@ public class Champion : MonoBehaviour
             {
                 Destroy(GameObject.Find("Effect Recall"));
             }
-            if (UIManager.instace.currentReCallUI)
+            if (UIManager.instance.currentReCallUI)
             {
-                Destroy(UIManager.instace.currentReCallUI.gameObject);
+                Destroy(UIManager.instance.currentReCallUI.gameObject);
             }
         }
     }
 
     public virtual void Death() { }
+
+    public void MoveToAttack()
+    {
+        if (targetAttack)
+        {
+            if(targetAttack.GetComponent<Champion>() && targetAttack.GetComponent<Champion>().state == State.Death)
+            {
+                targetAttack = null;
+                state = State.Idle;
+                attacking = false;
+            }
+
+            targetPos = Vector2.zero;
+            attacking = true;
+            if (Vector2.Distance(transform.position, targetAttack.transform.position) > propertyChampion.attackRange_Real)
+            {
+                Vector2 dir = (Vector2)targetAttack.transform.position - (Vector2)transform.position;
+
+                rb2d.velocity = (dir.normalized) * propertyChampion.moveSpeed_Real;
+
+                state = State.WalkToAttack;
+            }
+            else
+            {
+                rb2d.velocity = Vector2.zero;
+                LoadAttack();
+                state = State.Attack;
+            }
+        }
+        else
+        {
+            state = State.Idle;
+            attacking = false;
+        }
+    }
+
+    public virtual void Move()
+    {
+        if (targetPos != Vector2.zero)
+        {
+            if (Vector2.Distance(transform.position, targetPos) >= .2f)
+            {
+                Vector2 dir = targetPos - (Vector2)transform.position;
+
+                rb2d.velocity = (dir.normalized) * propertyChampion.moveSpeed_Real;
+                state = State.Walk;
+            }
+            else
+            {
+                state = State.Idle;
+                targetPos = Vector2.zero;
+                rb2d.velocity = Vector2.zero;
+            }
+        }
+    }
+
+    // Làm 
+
+    //Chỉnh sửa miniMap
+    //Phím tắt hiện tầm đánh
+    //Phím tắt chỉ tấn công
+    //Hiện thông báo phá trụ
+    //Ấn tab hiện giao diện điểm số
 }
 

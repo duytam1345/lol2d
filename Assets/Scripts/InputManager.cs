@@ -23,11 +23,27 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public static bool m_GetMouseButtonRight
+    {
+        get
+        {
+            return Input.GetMouseButton(1);
+        }
+    }
+
     public static Vector2 m_mousePosition
     {
         get
         {
             return Input.mousePosition;
+        }
+    }
+
+    public static bool m_KeyCtrl
+    {
+        get
+        {
+            return Input.GetKey(KeyCode.LeftControl);
         }
     }
 
@@ -108,6 +124,36 @@ public class InputManager : MonoBehaviour
         get
         {
             return Input.GetKeyDown(KeyCode.B);
+        }
+    }
+
+    public static bool m_KeyDownTab
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.Tab);
+        }
+    }
+    public static bool m_KeyUpTab
+    {
+        get
+        {
+            return Input.GetKeyUp(KeyCode.Tab);
+        }
+    }
+    
+    public static bool m_KeyDownC
+    {
+        get
+        {
+            return Input.GetKeyDown(KeyCode.C);
+        }
+    }
+    public static bool m_KeyUpC
+    {
+        get
+        {
+            return Input.GetKeyUp(KeyCode.C);
         }
     }
 }
