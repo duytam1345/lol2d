@@ -8,17 +8,17 @@ public class YasuoChamp : Champion
 
     private void Update()
     {
-        
+
     }
 
     public override void SkillPassive()
     {
-        
+
     }
 
-    public override void SkillQ()
+    public override void SkillQ(Vector3 vector)
     {
-        
+
     }
 
     public override void SkillW()
@@ -26,12 +26,12 @@ public class YasuoChamp : Champion
 
     }
 
-    public override void SkillE()
+    public override void SkillE(Vector3 vector)
     {
 
     }
 
-    public override void SkillR()
+    public override void SkillR(Vector3 vector)
     {
 
     }

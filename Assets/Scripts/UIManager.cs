@@ -66,7 +66,12 @@ public class UIManager : MonoBehaviour
 
     public GameObject prefabHealthBarChampion;
 
+    public Text textBlue;
+    public Text textRed;
+    public Text textKDA;
+    public Text textCreep;
     public Text textTimeGame;
+    public Text textFPS;
 
     [Header("Hiển thị hiệu ứng hiện tại")]
     [SerializeField]
@@ -188,6 +193,11 @@ public class UIManager : MonoBehaviour
     GameObject prefabReCallUI;
     public GameObject currentReCallUI;
 
+    [Header("Giao diện trò chuyện")]
+    public GameObject inputChat;
+    public Transform containChat;
+    public GameObject prefabSlotChat;
+
     private void Awake()
     {
         if (!instance)
@@ -198,11 +208,7 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
 
-    private void Start()
-    {
-        charater = FindObjectOfType<Charater>();
 
         for (int i = 0; i < Mananger.instance.championInGame.Count; i++)
         {
@@ -219,6 +225,71 @@ public class UIManager : MonoBehaviour
                 Mananger.instance.championInGame[i].uI = ui.GetComponent<UIFollowTarget>();
             }
         }
+    }
+
+    private void Start()
+    {
+        charater = FindObjectOfType<Charater>();
+
+        StartCoroutine(CoAnnounce());
+    }
+
+    IEnumerator CoAnnounce()
+    {
+        //Sound
+        GameObject s = Instantiate(Resources.Load("Audio/Wellcome to summerer rift")) as GameObject;
+
+
+        yield return new WaitForSeconds(.5f);
+        GameObject t = Instantiate(prefabSlotChat, containChat.transform);
+        t.GetComponent<Text>().text = "";
+
+        string timeCur = "[" + (int)Mananger.instance.timeMinute + ":" + (int)Mananger.instance.timeSecond + "] ";
+
+        t.GetComponent<Text>().text += timeCur+ " [Hệ thống] Chào mừng đến với Summerer Rift!";
+
+        containChat.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(containChat.GetComponent<RectTransform>().sizeDelta.x,
+            containChat.GetComponent<RectTransform>().sizeDelta.y + 50);
+
+
+
+        yield return new WaitForSeconds(1f);
+        GameObject t2 = Instantiate(prefabSlotChat, containChat.transform);
+        t2.GetComponent<Text>().text = "";
+
+        string timeCur2 = "[" + (int)Mananger.instance.timeMinute + ":" + (int)Mananger.instance.timeSecond + "] ";
+
+        t2.GetComponent<Text>().text += timeCur + " [Hệ thống] Lính đã xuất chinh.";
+
+        containChat.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(containChat.GetComponent<RectTransform>().sizeDelta.x,
+            containChat.GetComponent<RectTransform>().sizeDelta.y + 50);
+
+        yield return new WaitForSeconds(3f);
+        GameObject s2 = Instantiate(Resources.Load("Audio/Minion has spawn")) as GameObject;
+    }
+
+    private void Update()
+    {
+        Mananger.instance.timeMinute = Time.time / 60;
+        Mananger.instance.timeSecond = Time.time % 60;
+
+        textBlue.text = Mananger.instance.totalBlue.ToString();
+        textRed.text = Mananger.instance.totalRed.ToString();
+
+        textCreep.text = charater.champion.cr.ToString();
+        textKDA.text = charater.champion.kill + "/" + charater.champion.death + "/" + charater.champion.assist;
+
+        textFPS.text = "FPS: " + Mathf.Ceil(1 / Time.deltaTime).ToString();
+
+        SetTextTimeGame();
+    }
+
+    void SetTextTimeGame()
+    {
+        instance.textTimeGame.text =
+            Mathf.RoundToInt(Mananger.instance.timeMinute) + ":" + Mathf.RoundToInt(Mananger.instance.timeSecond);
     }
 
     public GameObject panelShop;
@@ -802,7 +873,7 @@ public class UIManager : MonoBehaviour
                 }
                 else if (b.GetComponent<Champion>())
                 {
-                    g.transform.GetChild(0).GetComponent<Text>().text = "Kẻ địch đã bị bạn giết!";
+                    g.transform.GetChild(0).GetComponent<Text>().text = "Kẻ địch đã bị bạn hạ gục!";
                     g.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = b.GetComponent<Champion>().spriteAvatar;
                 }
             }
@@ -853,5 +924,46 @@ public class UIManager : MonoBehaviour
         {
             panelKDA.SetActive(false);
         }
+    }
+
+    public void SetPanelChat(GameObject g)
+    {
+        if (Mananger.instance.inChatMode)
+        {
+            string s = inputChat.GetComponent<InputField>().text;
+
+            if (!string.IsNullOrEmpty(s))
+            {
+                GameObject t = Instantiate(prefabSlotChat, containChat.transform);
+                t.GetComponent<Text>().text = "";
+
+                string timeCur = "[" + (int)Mananger.instance.timeMinute + ":" + (int)Mananger.instance.timeSecond + "] ";
+
+                if (g.GetComponent<Champion>())
+                {
+                    t.GetComponent<Text>().text = timeCur + "(" + g.GetComponent<Champion>().nameChampion + ") ";
+                }
+                t.GetComponent<Text>().text += s;
+
+                containChat.GetComponent<RectTransform>().sizeDelta =
+                    new Vector2(containChat.GetComponent<RectTransform>().sizeDelta.x,
+                    containChat.GetComponent<RectTransform>().sizeDelta.y + 50);
+
+                //containChat.GetComponent<RectTransform>().position =
+                //    new Vector2(containChat.GetComponent<RectTransform>().position.x,
+                //    containChat.GetComponent<RectTransform>().sizeDelta.y - 100);
+            }
+
+            inputChat.SetActive(false);
+        }
+        else
+        {
+
+            inputChat.SetActive(true);
+            inputChat.GetComponent<InputField>().Select();
+            inputChat.GetComponent<InputField>().ActivateInputField();
+            inputChat.GetComponent<InputField>().text = "";
+        }
+        Mananger.instance.inChatMode = !Mananger.instance.inChatMode;
     }
 }

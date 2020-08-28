@@ -345,10 +345,10 @@ public class Champion : MonoBehaviour
     public Item ItemWard;
     public TuiDo tuiDo = new TuiDo();
     public virtual void SkillPassive() { }
-    public virtual void SkillQ() { }
+    public virtual void SkillQ(Vector3 vector) { }
     public virtual void SkillW() { }
-    public virtual void SkillE() { }
-    public virtual void SkillR() { }
+    public virtual void SkillE(Vector3 vector) { }
+    public virtual void SkillR(Vector3 vector) { }
 
     public GameObject rend;
 
@@ -372,7 +372,7 @@ public class Champion : MonoBehaviour
     [Header("Thống kê")]
     public int kill;
     public int death;
-    public int a;
+    public int assist;
     public int cr;
 
     public void PerSecond()
@@ -438,13 +438,22 @@ public class Champion : MonoBehaviour
     {
         if (propertyChampion.level < 18)
         {
+            //Sound
+            GameObject s = Instantiate(Resources.Load("Audio/Level Up")) as GameObject;
+
             propertyChampion.level++;
             leftPointSkill++;
-            textLevel.text = propertyChampion.level.ToString();
+            if (isBot)
+            {
+                uI.transform.GetChild(6).GetChild(0).GetComponent<Text>().text = propertyChampion.level.ToString();
+            }
+            else
+            {
+                textLevel.text = propertyChampion.level.ToString();
+                UIManager.instance.LoadPanelUpgradeSkill(this);
+            }
 
             SetProperty();
-
-            UIManager.instance.LoadPanelUpgradeSkill(this);
         }
     }
 
@@ -534,7 +543,10 @@ public class Champion : MonoBehaviour
         spellF = GetComponents<Spell>()[1];
 
         //Set With Champ
-        textLevel = GameObject.Find("Bar Top Player").transform.Find("Level").GetChild(0).GetComponent<Text>();
+        if (!isBot)
+        {
+            textLevel = GameObject.Find("Bar Top Player").transform.Find("Level").GetChild(0).GetComponent<Text>();
+        }
         GameObject.Find("Bar Top Player").transform.Find("Text").GetComponent<Text>().text = nameChampion;
         //Avatar
         GameObject.Find("Avatar").GetComponent<Image>().sprite = spriteAvatar;
@@ -721,17 +733,44 @@ public class Champion : MonoBehaviour
 
     public void TakeDamage(GameObject g, int dmg, Vector2 target)
     {
-        propertyChampion.healthPointSecond -= (int)dmg;
+        float dmged = CongThuc.LayDamage(dmg, propertyChampion.arrmor_Real);
+
+        propertyChampion.healthPointSecond -= dmged;
 
         Vector2 rectPos = target;
         rectPos = new Vector2(
             (float)Random.Range(rectPos.x - .5f, rectPos.x + .5f),
             (float)Random.Range(rectPos.y - .5f, rectPos.y + .5f));
 
-        UIManager.instance.MakeTextDamage(rectPos, ((int)dmg).ToString());
+        UIManager.instance.MakeTextDamage(rectPos, ((int)dmged).ToString());
 
         if (propertyChampion.healthPointSecond <= 0)
         {
+            if(team == Team.Blue)
+            {
+                Mananger.instance.totalRed++;
+            }
+            else
+            {
+                Mananger.instance.totalRed++;
+            }
+
+            if (g.GetComponent<Champion>())
+            {
+                if (g.GetComponent<Champion>().isBot)
+                {
+                    //Sound
+                    GameObject s = Instantiate(Resources.Load("Audio/You have been slain")) as GameObject;
+                }
+                else
+                {
+                    //Sound
+                    GameObject s = Instantiate(Resources.Load("Audio/Enemy has been slain")) as GameObject;
+                }
+
+                g.GetComponent<Champion>().kill++;
+            }
+
             UIManager.instance.CreateTextDestroyed(g, gameObject);
             Death();
         }
@@ -770,7 +809,10 @@ public class Champion : MonoBehaviour
         transform.position = (team == Team.Blue ? Mananger.instance.fountainBlue.transform.position : Mananger.instance.fountainRed.transform.position);
         UIManager.instance.imageAvatar.color = new Color(1f, 1f, 1f, 1);
         UIManager.instance.barTopHealth.SetActive(true);
-        Camera.main.transform.position = new Vector3(transform.position.x, 0, -10);
+        if (!isBot)
+        {
+            Camera.main.transform.position = new Vector3(transform.position.x, 0, -10);
+        }
     }
 
     public void ReCall()
@@ -780,13 +822,13 @@ public class Champion : MonoBehaviour
             recalling = true;
             GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             state = State.Idle;
+            GameObject e = Instantiate(prefabEffect, transform.position, Quaternion.identity);
+            e.name = "Effect Recall";
 
             if (!isBot)
             {
                 UIManager.instance.MakeReCallBar();
 
-                GameObject e = Instantiate(prefabEffect, transform.position, Quaternion.identity);
-                e.name = "Effect Recall";
             }
         }
     }
@@ -814,7 +856,7 @@ public class Champion : MonoBehaviour
     {
         if (targetAttack)
         {
-            if(targetAttack.GetComponent<Champion>() && targetAttack.GetComponent<Champion>().state == State.Death)
+            if (targetAttack.GetComponent<Champion>() && targetAttack.GetComponent<Champion>().state == State.Death)
             {
                 targetAttack = null;
                 state = State.Idle;
@@ -823,13 +865,16 @@ public class Champion : MonoBehaviour
 
             targetPos = Vector2.zero;
             attacking = true;
-            if (Vector2.Distance(transform.position, targetAttack.transform.position) > propertyChampion.attackRange_Real)
+            if (targetAttack && Vector2.Distance(transform.position, targetAttack.transform.position) > propertyChampion.attackRange_Real)
             {
                 Vector2 dir = (Vector2)targetAttack.transform.position - (Vector2)transform.position;
 
                 rb2d.velocity = (dir.normalized) * propertyChampion.moveSpeed_Real;
 
                 state = State.WalkToAttack;
+
+                anim.SetFloat("VelocityX", dir.x);
+                anim.SetFloat("VelocityY", dir.y);
             }
             else
             {
@@ -868,9 +913,15 @@ public class Champion : MonoBehaviour
     // Làm 
 
     //Chỉnh sửa miniMap
-    //Phím tắt hiện tầm đánh
-    //Phím tắt chỉ tấn công
-    //Hiện thông báo phá trụ
-    //Ấn tab hiện giao diện điểm số
+    // Giao diện chat
+    //Điều chỉnh tỉ lệ đánh lính
+    // Hiệu ứng âm thanh
+    //-đếm ngược giây chọn tướng
+    //-wellcome smnr minion
+    //-đánh thường, skill KogMaw
+    //-tiêu diệt
+    // Bot né chiêu
+    //Bot tự mua trang bị
+
 }
 

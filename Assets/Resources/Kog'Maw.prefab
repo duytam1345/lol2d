@@ -458,7 +458,7 @@ MonoBehaviour:
   timeLeftToRespawn: 0
   kill: 0
   death: 0
-  a: 0
+  assist: 0
   cr: 0
   targetAttack: {fileID: 0}
   attackSpeedSecond: 0
@@ -585,6 +585,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   champion: {fileID: 319262262155693477}
   currentHealth: 100
+  keyA: 0
   rb2d: {fileID: 319262262155693498}
   anim: {fileID: 319262260772010018}
   attacking: 0
@@ -604,7 +605,7 @@ MonoBehaviour:
   propertyChampion:
     exp: 0
     level: 0
-    money: 50000
+    money: 500
     healthEachLv: 90
     healthRegenEachLv: 0.55
     manaEachLv: 40
@@ -733,7 +734,7 @@ MonoBehaviour:
   timeLeftToRespawn: 0
   kill: 0
   death: 0
-  a: 0
+  assist: 0
   cr: 0
   targetAttack: {fileID: 0}
   attackSpeedSecond: 0

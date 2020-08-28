@@ -14,9 +14,6 @@ public class SkillQKogMaw : MonoBehaviour
 
     private void Start()
     {
-        Vector3 p = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
-        dir = p - transform.position;
-
         startPos = transform.position;
 
         Vector3 direction = transform.position + (Vector3)dir - transform.position;
@@ -36,7 +33,19 @@ public class SkillQKogMaw : MonoBehaviour
         {
             if (item.GetComponent<Creep>() && item.GetComponent<Creep>().team != team)
             {
+                //Sound
+                GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw QHit")) as GameObject;
+
                 item.GetComponent<Creep>().TakeDamage(c.gameObject, (int)dmg);
+                Destroy(gameObject);
+                return;
+            }
+            else if (item.GetComponent<Champion>() && item.GetComponent<Champion>().team != team)
+            {
+                //Sound
+                GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw QHit")) as GameObject;
+
+                item.GetComponent<Champion>().TakeDamage(c.gameObject, (int)dmg, item.transform.position);
                 Destroy(gameObject);
                 return;
             }

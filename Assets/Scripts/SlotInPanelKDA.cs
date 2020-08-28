@@ -31,7 +31,7 @@ public class SlotInPanelKDA : MonoBehaviour
         //Set creep
         textCreep.text = c.cr.ToString();
         //Set KDA
-        textKDA.text = c.kill + "/" + c.death + "/" + c.a;
+        textKDA.text = c.kill + "/" + c.death + "/" + c.assist;
         //Set avatar champ
         avatar.sprite = c.spriteAvatar;
 

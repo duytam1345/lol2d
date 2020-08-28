@@ -224,7 +224,7 @@ public class MundoChampion : Champion
             {
                 timeEffectRSecond = 1;
 
-                int amount = (int)(propertyChampion.healthPoint_Real / 100 * 25+(25*levelSkillR)) / 12;
+                int amount = (int)(propertyChampion.healthPoint_Real / 100 * 25 + (25 * levelSkillR)) / 12;
 
                 propertyChampion.healthPointSecond += amount;
 
@@ -263,7 +263,7 @@ public class MundoChampion : Champion
         propertyChampion.UpdateValue();
     }
 
-    public override void SkillQ()
+    public override void SkillQ(Vector3 vector)
     {
         if (timeCoolDownSkillQSecond <= 0 && propertyChampion.healthPointSecond > costQ && levelSkillQ > 0)
         {
@@ -297,7 +297,7 @@ public class MundoChampion : Champion
             }
         }
     }
-    public override void SkillE()
+    public override void SkillE(Vector3 vector)
     {
         if (timeCoolDownSkillESecond <= 0 && propertyChampion.healthPointSecond > costE && levelSkillE > 0)
         {
@@ -306,13 +306,13 @@ public class MundoChampion : Champion
             propertyChampion.healthPointSecond -= costE;
             timeCoolDownSkillESecond = timeCoolDownSkillE;
 
-            propertyChampion.physicsDamageExtra.Add("Skill E MunDo", 25 + 15 *levelSkillE);
+            propertyChampion.physicsDamageExtra.Add("Skill E MunDo", 25 + 15 * levelSkillE);
             propertyChampion.UpdateValue();
 
             attackSpeedSecond = 0;
         }
     }
-    public override void SkillR()
+    public override void SkillR(Vector3 vector)
     {
         if (timeCoolDownSkillRSecond <= 0 && propertyChampion.healthPoint > costR && levelSkillR > 0)
         {

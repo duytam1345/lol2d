@@ -60,6 +60,28 @@ public class SkillRKogMaw : MonoBehaviour
 
                 item.GetComponent<Creep>().TakeDamage(c.gameObject, (int)damage);
             }
+            else if (item.GetComponent<Champion>() && item.GetComponent<Champion>().team != team)
+            {
+                float percentMissingHeal =
+                    (item.GetComponent<Champion>().propertyChampion.healthPoint_Real - item.GetComponent<Champion>().propertyChampion.healthPointSecond)
+                   * 100 / item.GetComponent<Champion>().propertyChampion.healthPoint;
+
+                float damage = 0;
+
+                if (percentMissingHeal > 60)
+                {
+                    damage = 200 + (physicsDamage / 100 * 130) + (magicDamage / 100 * 70);
+                }
+                else
+                {
+                    float increamentPercent = percentMissingHeal * 60 / 50;
+                    damage = (100 + (100 / 100 * increamentPercent)) +
+                        physicsDamage / 100 * (65 + (65 / 100 * increamentPercent)) +
+                        magicDamage / 100 * (35 + (35 / 100 * increamentPercent));
+                }
+
+                item.GetComponent<Champion>().TakeDamage(c.gameObject, (int)damage,item.transform.position);
+            }
         }
 
         Destroy(gameObject);

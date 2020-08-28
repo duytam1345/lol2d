@@ -249,9 +249,4 @@ public class Turret : MonoBehaviour
         }
         Destroy(gameObject, 1.5f);
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(transform.position, property.rangeToAttack);
-    }
 }

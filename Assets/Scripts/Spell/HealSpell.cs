@@ -10,9 +10,11 @@ public class HealSpell : Spell
         {
             Instantiate(effect, transform.position, Quaternion.identity, champion.transform);
 
-            GameObject icon = Instantiate(iconEffect);
-            UIManager.instance.CreateSlotEffect("Heal Spell", icon.GetComponent<IconEffect>());
-
+            if (!champion.isBot)
+            {
+                GameObject icon = Instantiate(iconEffect);
+                UIManager.instance.CreateSlotEffect("Heal Spell", icon.GetComponent<IconEffect>());
+            }
             champion.TakeHealth(CongThuc.Heal(champion));
             SoundBase.Sound.Heal();
             timeCooldownSecond = 240;

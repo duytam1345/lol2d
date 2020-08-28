@@ -57,6 +57,13 @@ public class SkillEKogMaw : MonoBehaviour
                 collision.GetComponent<Creep>().TakeDamage(baseChamp.gameObject, (int)((30+(45*baseChamp.levelSkillE)) + (magicDamage / 100 * 50)));
             }
         }
+        else if (collision.GetComponent<Champion>() && collision.GetComponent<Champion>().team != team)
+        {
+            if (transform.localScale.y < 5)
+            {
+                collision.GetComponent<Champion>().TakeDamage(baseChamp.gameObject, (int)((30 + (45 * baseChamp.levelSkillE)) + (magicDamage / 100 * 50)), collision.transform.position);
+            }
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -83,5 +90,27 @@ public class SkillEKogMaw : MonoBehaviour
                 collision.GetComponent<Creep>().property.moveSpeedExtra.Add("Skill E KogMaw", valueExtra);
             }
         }
+        //else if (collision.GetComponent<Champion>() && collision.GetComponent<Champion>().team != team)
+        //{
+        //    bool exsist = false;
+        //    foreach (var item in collision.GetComponent<Champion>().propertyChampion.moveSpeedExtra.Keys)
+        //    {
+        //        if (item == "Skill E KogMaw")
+        //        {
+        //            exsist = true;
+        //            collision.GetComponent<Champion>().propertyChampion.moveSpeedExtra[item].timeLeft = .25f;
+        //        }
+        //    }
+
+        //    if (!exsist)
+        //    {
+        //        float valueSlow = collision.GetComponent<Champion>().propertyChampion.moveSpeed / 100 * (12 + (8 * baseChamp.levelSkillE));
+
+        //        ValueExtra valueExtra = new ValueExtra();
+        //        valueExtra.timeLeft = .25f;
+        //        valueExtra.value = -(valueSlow);
+        //        collision.GetComponent<Champion>().propertyChampion.moveSpeedExtra.Add("Skill E KogMaw", valueExtra);
+        //    }
+        //}
     }
 }

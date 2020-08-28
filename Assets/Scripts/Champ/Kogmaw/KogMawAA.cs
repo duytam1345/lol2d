@@ -37,6 +37,9 @@ public class KogMawAA : MonoBehaviour
 
     void Damage()
     {
+        //
+        GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw AAHit")) as GameObject;
+
         if (target.GetComponent<Creep>())
         {
             float dmg = damage;

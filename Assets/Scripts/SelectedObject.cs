@@ -67,6 +67,25 @@ public class SelectedObject : MonoBehaviour
                 imageHeal.transform.GetChild(0).GetComponent<Image>().fillAmount =
                     (float)g.GetComponent<Creep>().currentHealth / (float)g.GetComponent<Creep>().property.healthPoint;
             }
+            else if (g.GetComponent<Champion>())
+            {
+                Champion c = g.GetComponent<Champion>();
+                imageSelected.sprite = c.spriteAvatar;
+
+                textSelectedPhysicsDamage.text = c.propertyChampion.physicsDamage_Real.ToString();
+                textSelectedMagicDamage.text = c.propertyChampion.magicDamage_Real.ToString();
+                textSelectedArrmor.text = c.propertyChampion.arrmor_Real.ToString();
+                textSelectedMagicResistance.text = c.propertyChampion.magicResistance_Real.ToString(); ;
+                textSelectedAttackSpeed.text = c.propertyChampion.attackSpeed_Real.ToString();
+                textSelectedCooldown.text = c.propertyChampion.cooldown_Real.ToString();
+                textSelectedCritRate.text = c.propertyChampion.critRate_Real.ToString();
+                textSelectedMoveSpeed.text = c.propertyChampion.moveSpeed_Real.ToString();
+
+                imageMana.gameObject.SetActive(true);
+                imageMana.gameObject.SetActive(false);
+                imageHeal.transform.GetChild(0).GetComponent<Image>().fillAmount =
+                    (float)g.GetComponent<Champion>().propertyChampion.healthPointSecond / (float)g.GetComponent<Champion>().propertyChampion.healthPoint_Real;
+            }
             else if (g.GetComponent<Turret>())
             {
                 imageSelected.sprite = (g.GetComponent<Turret>().team == Team.Blue ?

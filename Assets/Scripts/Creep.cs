@@ -437,18 +437,19 @@ public class Creep : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            if (g.GetComponent<Charater>())
-            {
-                Vector2 p = new Vector2(transform.position.x, transform.position.y + 2);
-                int money = CongThuc.MoneyOfCreep(type);
-
-                UIManager.instance.MakeTextMoney(p, money.ToString());
-                FindObjectOfType<Champion>().propertyChampion.money += money;
-            }
-            if (g.GetComponent<Champion>())
+            if (g && g.GetComponent<Champion>())
             {
                 g.GetComponent<Champion>().cr++;
+                if (!g.GetComponent<Champion>().isBot)
+                {
+                    Vector2 p = new Vector2(transform.position.x, transform.position.y + 2);
+                    int money = CongThuc.MoneyOfCreep(type);
+
+                    UIManager.instance.MakeTextMoney(p, money.ToString());
+                    FindObjectOfType<Champion>().propertyChampion.money += money;
+                }
             }
+
             Death();
         }
 
@@ -460,7 +461,7 @@ public class Creep : MonoBehaviour
         Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, 7);
         foreach (var item in collider2Ds)
         {
-            if (item.GetComponent<Charater>() && item.GetComponent<Charater>().champion.team != team)
+            if (item.GetComponent<Champion>() && item.GetComponent<Champion>().team != team)
             {
                 item.GetComponentInChildren<Champion>().TakeExp(CongThuc.ExpOfCreep(type));
             }

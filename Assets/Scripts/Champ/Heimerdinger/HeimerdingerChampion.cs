@@ -171,7 +171,7 @@ public class HeimerdingerChampion : Champion
 
     }
 
-    public override void SkillQ()
+    public override void SkillQ(Vector3 vector)
     {
         if (timeCoolDownSkillQSecond <= 0 && propertyChampion.manaPointSecond >= costQ && levelSkillQ > 0)
         {
@@ -311,11 +311,11 @@ public class HeimerdingerChampion : Champion
         }
     }
 
-    public override void SkillE()
+    public override void SkillE(Vector3 vector)
     {
         if (timeCoolDownSkillESecond <= 0 && propertyChampion.manaPointSecond >= costE && levelSkillE > 0)
         {
-            Vector2 p = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
+            Vector2 p = vector;
 
             if (Vector2.Distance(p, transform.position) <= 4)
             {
@@ -346,7 +346,7 @@ public class HeimerdingerChampion : Champion
         }
     }
 
-    public override void SkillR()
+    public override void SkillR(Vector3 vector)
     {
         if (timeCoolDownSkillRSecond <= 0 && propertyChampion.manaPointSecond >= 100 && levelSkillQ > 0)
         {

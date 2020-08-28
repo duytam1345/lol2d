@@ -65,8 +65,13 @@ public class Mananger : MonoBehaviour
 
     public List<Champion> championInGame;
 
+    public int totalBlue = 0;
+    public int totalRed = 0;
+
     public float timeMinute;
     public float timeSecond;
+
+    public bool inChatMode;
 
     private void Awake()
     {
@@ -135,16 +140,6 @@ public class Mananger : MonoBehaviour
     private void Update()
     {
         CalTime();
-
-        timeMinute = Time.time / 60;
-        timeSecond = Time.time % 60;
-
-        SetTextTimeGame();
-    }
-
-    void SetTextTimeGame()
-    {
-        UIManager.instance.textTimeGame.text = Mathf.RoundToInt(timeMinute) + ":" + Mathf.RoundToInt(timeSecond);
     }
 
     void SpawnTurret()

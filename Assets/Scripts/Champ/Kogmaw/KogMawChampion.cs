@@ -49,11 +49,15 @@ public class KogMawChampion : Champion
 
     public override void Attack()
     {
-        int r = Random.Range(0, 3);
-        if (r == 0)
-        {
-            GameObject g = Instantiate(Resources.Load("Kog'Maw/Kog'Maw Move") as GameObject);
-        }
+        //int r = Random.Range(0, 3);
+        //if (r == 0)
+        //{
+        //    GameObject g = Instantiate(Resources.Load("Kog'Maw/Kog'Maw Move") as GameObject);
+        //}
+
+
+        //Sound
+        GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw AA")) as GameObject;
 
         GameObject a = Instantiate(objectAttack, transform.position, Quaternion.identity);
         a.GetComponent<KogMawAA>().baseChamp = this;
@@ -88,7 +92,7 @@ public class KogMawChampion : Champion
         }
         //
 
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.U) && !isBot)
         {
             LevelUp();
         }
@@ -183,14 +187,19 @@ public class KogMawChampion : Champion
         //
     }
 
-    public override void SkillQ()
+    public override void SkillQ(Vector3 vector)
     {
         if (timeCoolDownSkillQSecond <= 0 && propertyChampion.manaPointSecond >= costW && levelSkillQ > 0)
         {
+            //Sound
+            GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw Q")) as GameObject;
+
             GameObject g = Instantiate(prefabSkillQ, transform.position, Quaternion.identity);
             g.GetComponent<SkillQKogMaw>().dmg = (40 + (50 * levelSkillQ)) + propertyChampion.magicDamage_Real / 100 * 70;
             g.GetComponent<SkillQKogMaw>().c = this;
             g.GetComponent<SkillQKogMaw>().team = team;
+            g.GetComponent<SkillQKogMaw>().dir = vector - transform.position;
+
 
             propertyChampion.manaPointSecond -= costQ;
             timeCoolDownSkillQSecond = timeCoolDownSkillQ;
@@ -201,6 +210,9 @@ public class KogMawChampion : Champion
     {
         if (timeCoolDownSkillWSecond <= 0 && propertyChampion.manaPointSecond >= costW && levelSkillW > 0)
         {
+            //Sound
+            GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw W")) as GameObject;
+
             GameObject icon = Instantiate(iconEffectW);
             UIManager.instance.CreateSlotEffect("Skill W KogMaw", icon.GetComponent<IconEffect>());
 
@@ -215,16 +227,19 @@ public class KogMawChampion : Champion
         }
     }
 
-    public override void SkillE()
+    public override void SkillE(Vector3 vector)
     {
         if (timeCoolDownSkillESecond <= 0 && propertyChampion.manaPointSecond >= costE && levelSkillE > 0)
         {
+            //Sound
+            GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw E")) as GameObject;
+
             GameObject g = Instantiate(prefabSkillE, transform.position, Quaternion.identity);
             g.GetComponent<SkillEKogMaw>().baseChamp = this;
             g.GetComponent<SkillEKogMaw>().magicDamage = propertyChampion.magicDamage_Real;
             g.GetComponent<SkillEKogMaw>().team = team;
 
-            Vector3 dir = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition) - transform.position;
+            Vector3 dir = vector - transform.position;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             Vector3 q = Quaternion.AngleAxis(angle, Vector3.forward).eulerAngles;
             g.transform.eulerAngles = new Vector3(0, 0, q.z - 90);
@@ -234,12 +249,16 @@ public class KogMawChampion : Champion
         }
     }
 
-    public override void SkillR()
+    public override void SkillR(Vector3 vector)
     {
         if (timeCoolDownSkillRSecond <= 0 && propertyChampion.manaPointSecond >= costR && levelSkillR > 0)
         {
-            Vector2 v = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
+            //Sound
+            GameObject s = Instantiate(Resources.Load("Kog'Maw/Kog'Maw R")) as GameObject;
+
+            Vector2 v = vector;
             GameObject g = Instantiate(prefabSkillR, v, Quaternion.identity);
+            g.GetComponent<SkillRKogMaw>().team = team;
             g.GetComponent<SkillRKogMaw>().c = this;
             g.GetComponent<SkillRKogMaw>().physicsDamage = propertyChampion.physicsDamage_Real;
             g.GetComponent<SkillRKogMaw>().magicDamage = propertyChampion.magicDamage_Real;

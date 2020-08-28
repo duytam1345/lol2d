@@ -10,6 +10,7 @@ public class Charater : MonoBehaviour
 
     public int currentHealth;
 
+    public bool keyA;
 
     [SerializeField]
     Rigidbody2D rb2d;
@@ -35,7 +36,7 @@ public class Charater : MonoBehaviour
         UIManager.instance.UpdateImage(champion);
 
         champion.SkillPassive();
-        if (InputManager.m_KeyDownQ)
+        if (InputManager.m_KeyDownQ && !Mananger.instance.inChatMode)
         {
             if (InputManager.m_KeyCtrl)
             {
@@ -44,10 +45,10 @@ public class Charater : MonoBehaviour
             else
             {
                 champion.StopReCall();
-                champion.SkillQ();
+                champion.SkillQ(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
             }
         }
-        if (InputManager.m_KeyDownW)
+        if (InputManager.m_KeyDownW && !Mananger.instance.inChatMode)
         {
             if (InputManager.m_KeyCtrl)
             {
@@ -59,7 +60,7 @@ public class Charater : MonoBehaviour
                 champion.SkillW();
             }
         }
-        if (InputManager.m_KeyDownE)
+        if (InputManager.m_KeyDownE && !Mananger.instance.inChatMode)
         {
             if (InputManager.m_KeyCtrl)
             {
@@ -68,10 +69,10 @@ public class Charater : MonoBehaviour
             else
             {
                 champion.StopReCall();
-                champion.SkillE();
+                champion.SkillE(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
             }
         }
-        if (InputManager.m_KeyDownR)
+        if (InputManager.m_KeyDownR && !Mananger.instance.inChatMode)
         {
             if (InputManager.m_KeyCtrl)
             {
@@ -80,46 +81,46 @@ public class Charater : MonoBehaviour
             else
             {
                 champion.StopReCall();
-                champion.SkillR();
+                champion.SkillR(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
             }
         }
 
-        if (InputManager.m_KeyDownD)
+        if (InputManager.m_KeyDownD && !Mananger.instance.inChatMode)
         {
             champion.spellD.Use(champion);
         }
 
-        if (InputManager.m_KeyDownF)
+        if (InputManager.m_KeyDownF && !Mananger.instance.inChatMode)
         {
             champion.spellF.Use(champion);
         }
 
-        if (InputManager.m_KeyDownP)
+        if (InputManager.m_KeyDownP && !Mananger.instance.inChatMode)
         {
             UIManager.instance.ClickShop();
         }
 
-        if (InputManager.m_KeyDownB)
+        if (InputManager.m_KeyDownB && !Mananger.instance.inChatMode)
         {
             champion.ReCall();
         }
 
-        if (InputManager.m_KeyDownTab)
+        if (InputManager.m_KeyDownTab && !Mananger.instance.inChatMode)
         {
             UIManager.instance.SetTabPanel(true);
         }
-        if (InputManager.m_KeyUpTab)
+        if (InputManager.m_KeyUpTab && !Mananger.instance.inChatMode)
         {
             UIManager.instance.SetTabPanel(false);
         }
 
-        if (InputManager.m_KeyDownC)
+        if (InputManager.m_KeyDownC && !Mananger.instance.inChatMode)
         {
             transform.Find("Circle Range").localScale =
             new Vector3(champion.propertyChampion.attackRange_Real, champion.propertyChampion.attackRange_Real, 0);
             transform.Find("Circle Range").gameObject.SetActive(true);
         }
-        if (InputManager.m_KeyUpC)
+        if (InputManager.m_KeyUpC && !Mananger.instance.inChatMode)
         {
             transform.Find("Circle Range").gameObject.SetActive(false);
         }
@@ -145,27 +146,60 @@ public class Charater : MonoBehaviour
 
         SetCursor();
 
+        if (InputManager.m_KeyDownA && !Mananger.instance.inChatMode)
+        {
+            keyA = true;
+        }
+
         if (InputManager.m_GetMouseButtonDownRight)
         {
-            Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
-            RightClick();
+            if (!Mananger.instance.inChatMode)
+            {
+                Mananger.instance.MakeAnimClickMove(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition));
+                RightClick();
+            }
+            else
+            {
+                Mananger.instance.inChatMode = false;
+            }
         }
         if (InputManager.m_GetMouseButtonRight)
         {
-            RightClick();
+            if (!Mananger.instance.inChatMode)
+            {
+                RightClick();
+                keyA = false;
+            }
+            else
+            {
+                Mananger.instance.inChatMode = false;
+            }
         }
 
         if (InputManager.m_GetMouseButtonDownLeft)
         {
-            LeftClick();
+            if (!Mananger.instance.inChatMode)
+            {
+                LeftClick();
+                keyA = false;
+            }
+            else
+            {
+                Mananger.instance.inChatMode = false;
+            }
         }
 
-        if (InputManager.m_KeyDownS)
+        if (InputManager.m_KeyDownS && !Mananger.instance.inChatMode)
         {
             attacking = false;
             rb2d.velocity = Vector2.zero;
             champion.targetAttack = null;
             champion.state = Champion.State.Idle;
+        }
+
+        if (InputManager.m_KeydownEnter)
+        {
+            UIManager.instance.SetPanelChat(champion.gameObject);
         }
     }
 
@@ -198,28 +232,78 @@ public class Charater : MonoBehaviour
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
 
         RaycastHit2D r = Physics2D.Raycast(mousePos, Vector2.zero);
-        if (r.collider)
+        if (keyA)
         {
-            string n = r.collider.name;
+            GameObject shortestGo = null;
+            float distance = Mathf.Infinity;
 
-            if (n == "Ong chu tiem trang bi")
+            Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), 5);
+            foreach (var item in collider2Ds)
             {
-                UIManager.instance.ClickShop();
+                if (Vector2.Distance(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), item.transform.position) < distance)
+                {
+                    if (item.GetComponent<Creep>() && item.GetComponent<Creep>().team != champion.team)
+                    {
+                        distance = Vector2.Distance(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), item.transform.position);
+                        shortestGo = item.gameObject;
+                    }
+                    if (item.GetComponent<Champion>() && item.GetComponent<Champion>().team != champion.team)
+                    {
+                        distance = Vector2.Distance(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), item.transform.position);
+                        shortestGo = item.gameObject;
+                    }
+                    if (item.GetComponent<Turret>() && item.GetComponent<Turret>().team != champion.team)
+                    {
+                        distance = Vector2.Distance(Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition), item.transform.position);
+                        shortestGo = item.gameObject;
+                    }
+                }
             }
-            else if (r.collider.GetComponent<Creep>())
+
+            if (shortestGo)
             {
-                UIManager.instance.SetInfoPanel(r.collider.gameObject);
+                champion.targetAttack = shortestGo.gameObject;
+                champion.state = Champion.State.WalkToAttack;
+                champion.MoveToAttack();
+                if (champion.targetAttack)
+                {
+                    Vector2 dir = (champion.targetAttack.transform.position - champion.transform.position).normalized;
+                    champion.anim.SetFloat("VelocityX", dir.x);
+                    champion.anim.SetFloat("VelocityY", dir.y);
+
+                    champion.StopReCall();
+                }
             }
-            else if (r.collider.GetComponent<Turret>())
+            else
             {
-                UIManager.instance.SetInfoPanel(r.collider.gameObject);
+                attacking = false;
+                champion.state = Champion.State.Walk;
+                champion.targetAttack = null;
+                champion.targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
             }
+
+            UIManager.instance.SetInfoPanel(null);
         }
         else
         {
-            UIManager.instance.SetInfoPanel(null);
+            if (r.collider)
+            {
+                if (r.collider.GetComponent<Creep>())
+                {
+                    UIManager.instance.SetInfoPanel(r.collider.gameObject);
+                }
+                else if (r.collider.GetComponent<Turret>())
+                {
+                    UIManager.instance.SetInfoPanel(r.collider.gameObject);
+                }
+                else if (r.collider.GetComponent<Champion>())
+                {
+                    UIManager.instance.SetInfoPanel(r.collider.gameObject);
+                }
+            }
         }
     }
+
 
     void RightClick()
     {
@@ -267,6 +351,13 @@ public class Charater : MonoBehaviour
 
                 champion.StopReCall();
             }
+            else
+            {
+                attacking = false;
+                champion.state = Champion.State.Walk;
+                champion.targetAttack = null;
+                champion.targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
+            }
         }
         else if (r.collider && r.collider.GetComponent<Turret>())
         {
@@ -281,8 +372,15 @@ public class Charater : MonoBehaviour
 
                 champion.StopReCall();
             }
+            else
+            {
+                attacking = false;
+                champion.state = Champion.State.Walk;
+                champion.targetAttack = null;
+                champion.targetPos = Camera.main.ScreenToWorldPoint(InputManager.m_mousePosition);
+            }
         }
-        else if (r.collider && r.collider.GetComponent<Champion>()&& r.collider.GetComponent<Champion>().team != champion.team)
+        else if (r.collider && r.collider.GetComponent<Champion>() && r.collider.GetComponent<Champion>().team != champion.team)
         {
             if (r.collider.GetComponent<Champion>().team != champion.team && champion.canAttack)
             {
